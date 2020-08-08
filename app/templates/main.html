@@ -34,6 +34,55 @@
 
 <button type="button" class="btn btn-primary btn-lg" onclick=displayAddForm()>添加记事</button>
 
+
+<table id="noteTable" class="table table-hover">
+    <thead>
+    <tr>
+        <th>序号</th>
+
+        <th>标题</th>
+        <th>正文</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in note %}
+        <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.text }}</td>
+            <td>{{ i.s_time }}</td>
+            <td>{{ i.e_time }}</td>
+            {% if i.status == 'F' %}
+                <td class="danger">
+                    已完成
+                </td>
+            {% elif i.status == 'U' %}
+                <td class="safe">
+                    进行中
+                </td>
+            {% endif %}
+            <td>
+                {% if i.status == 'F' %}
+                    <button type="button" class="btn btn-warning" onclick="">进行</button>
+
+                {% elif i.status == 'U' %}
+                    <button type="button" class="btn btn-success" onclick=finishNote("{{ i.id }}")>完成</button>
+                {% endif %}
+                <button type="button" class="btn btn-primary"
+                        onclick=selectRow("{{ i.s_time }}")>
+                    修改
+                </button>
+                <button type="button" class="btn btn-danger" onclick=delNote("{{ i.id }}")>删除</button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 <!--添加笔记弹出框-->
 <div id="newNoteAlert" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -45,7 +94,7 @@
             </div>
             <div class="modal-body">
                 <!--上传信息表格-->
-                <form id="noteForm" action="" onsubmit="return false">
+                <form id="newNoteForm" action="" onsubmit="return false">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">标题</span>
@@ -93,62 +142,83 @@
 </div>
 
 
-<table id="noteTable" class="table table-hover">
-    <thead>
-    <tr>
-        <th>序号</th>
-        <th>状态</th>
-        <th>标题</th>
-        <th>正文</th>
-        <th>开始时间</th>
-        <th>结束时间</th>
-        <th>操作</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for i in note %}
-        <tr>
-            {% if i.status != 'D' %}
-                <td>{{ i.id }}</td>
-                {% if i.status == 'F' %}
-                    <td class="danger">
-                        已完成
-                    </td>
-                {% elif i.status == 'U' %}
-                    <td class="safe">
-                        进行中
-                    </td>
-                {% endif %}
-                <td>{{ i.name }}</td>
-                <td style="display:none">{{ i.text }}</td>
-                <td>{{ i.s_time }}</td>
-                <td>{{ i.e_time }}</td>
-                <td>
-                    {% if i.status == 'F' %}
-                        <button type="button" class="btn btn-warning" onclick=restartNote("{{ i.id }}")>进行</button>
+<!--修改笔记弹出框-->
+<div id="modifyNoteAlert" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    修改记事
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="modifyNoteForm" action="" onsubmit="return false">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">记事序号</span>
+                        </div>
+                        <label for="id"></label>
+                        <input type="text" class="form-control" id="id" name="id" required disabled>
+                    </div>
 
-                    {% elif i.status == 'U' %}
-                        <button type="button" class="btn btn-success" onclick=finishNote("{{ i.id }}")>完成</button>
-                    {% endif %}
-                    <button type="button" class="btn btn-danger" onclick=delNote("{{ i.id }}")>删除</button>
-                </td>
-            {% endif %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">标题</span>
+                        </div>
+                        <label for="names"></label>
+                        <input type="text" class="form-control" id="names" name="names" required>
+                    </div>
 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">内容</span>
+                        </div>
+                        <label for="texts"></label>
+                        <input type="text" class="form-control" id="texts" name="texts" required>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">开始时间</span>
+                        </div>
+                        <label for="startTimes"></label>
+                        <input type="datetime-local" class="form-control" id="startTimes" name="startTimes"
+                               placeholder="请选择开始时间"
+                               required>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">结束时间</span>
+                        </div>
+                        <label for="endTimes"></label>
+                        <input type="datetime-local" class="form-control" id="endTimes" name="endTimes"
+                               placeholder="请选择结束时间"
+                               required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">状态</span>
+                        </div>
+                        <label for="status"></label>
+                        <input type="text" class="form-control" id="status" name="status" required disabled>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="">提交</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 
     $('#noteTable').bootstrapTable({
         //点击行事件
-        onDblClickRow: function (row) {
-            if (row[1] === '进行中') {
-                $('#newNoteAlert').modal('show')
-            }
-        },
-        hideColumn:function () {
+        onDblClickRow: function () {
 
         },
         //是否显示分页条
@@ -163,20 +233,12 @@
         pageList: [10, 20],
         //启用关键字搜索框
         search: true,
-
     })
 
     //显示新增记事框
     function displayAddForm() {
         $('#newNoteAlert').modal('show')
     }
-
-    //根据id显示记事内容
-    function getNoteText(id) {
-
-    }
-
-
 </script>
 </body>
 </html>

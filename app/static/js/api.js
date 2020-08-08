@@ -19,7 +19,7 @@ function sendAjax(param, url, callback) {
 
 function addNote() {
     var d = {}
-    var t = $('#noteForm').serializeArray()
+    var t = $('#newNoteForm').serializeArray()
     //表单是否存在空值
     var isNull = false
     $.each(t, function () {
@@ -119,3 +119,14 @@ function finishNote(n_id) {
         }
     })
 }
+
+function modifyNote() {
+
+}
+
+function selectRow(ime) {
+    console.log(time)
+
+
+}
+
