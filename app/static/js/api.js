@@ -17,9 +17,9 @@ function sendAjax(param, url, callback) {
     })
 }
 
-function addRecord() {
+function addNote() {
     var d = {}
-    var t = $('#recordForm').serializeArray()
+    var t = $('#noteForm').serializeArray()
     //表单是否存在空值
     var isNull = false
     $.each(t, function () {
@@ -35,38 +35,28 @@ function addRecord() {
     if (isNull) {
         return
     }
-    sendAjax(d, '/app/add/', addCallback)
+    sendAjax(d, '/app/add/', function (value) {
+        if (value === 1) {
+            swal({
+                title: "添加成功",
+                text: "",
+                type: "success",
+                timer: 2000
+            }, function () {
+                location.href = '/app/'
+            })
+        }
+        if (value === 0) {
+            swal("填写内容不能为空", "请重写填写", "error")
+        }
+    })
 }
 
-function addCallback(value) {
-    if (value === 1) {
-        swal({
-            title: "提交成功",
-            text: "",
-            type: "success",
-            timer: 2000
-        }, function () {
-            location.href = '/app/'
-        })
-    }
-    if (value === 0) {
-        swal("填写内容不能为空", "请重写填写", "error")
-    }
-    if (value === -1) {
-        swal({
-            title: "该学生体温已提交",
-            text: "请勿重复提交",
-            type: "warning"
-        }, function () {
-            $('#recordForm')[0].reset()
-        })
-    }
-}
 
-function delRecord(num) {
+function delNote(n_id) {
     swal({
-            title: "确定要删除该记录吗",
-            text: "删除后将无法恢复，请谨慎操作！",
+            title: "确定要删除该笔记吗",
+            text: "删除后可在回收站内恢复",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -84,24 +74,48 @@ function delRecord(num) {
                 })
                 return
             }
-            var data = {'num': num}
-            sendAjax(data, '/app/del/', delCallback)
+            var data = {
+                'n_id': n_id,
+                'status': 'D'
+            }
+            sendAjax(data, '/app/change/', function (value) {
+                if (value === 1) {
+                    swal({
+                        title: "删除成功",
+                        text: "",
+                        type: "success",
+                        timer: 2000
+                    }, function () {
+                        location.reload()
+                    })
+                }
+                if (value === -1) {
+                    swal("删除失败", "请重试", "error")
+                }
+            })
         }
     )
 }
 
-function delCallback(value) {
-    if (value === 1) {
-        swal({
-            title: "删除成功",
-            text: "",
-            type: "success",
-            timer: 2000
-        }, function () {
-            location.reload()
-        })
+
+function finishNote(n_id) {
+    var data = {
+        'n_id': n_id,
+        'status': 'F'
     }
-    if (value === -1) {
-        swal("删除失败", "请重试", "error")
-    }
+    sendAjax(data, '/app/change/', function (value) {
+        if (value === 1) {
+            swal({
+                title: "记事已完成",
+                text: "",
+                type: "success",
+                timer: 2000
+            }, function () {
+                location.reload()
+            })
+        }
+        if (value === -1) {
+            swal("网络异常", "请重试", "error")
+        }
+    })
 }

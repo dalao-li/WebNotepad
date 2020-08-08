@@ -10,24 +10,10 @@ class Note(models.Model):
         ('D', 'Deleted')
     )
 
-    name = models.CharField(verbose_name='标题', help_text='请输入记事标题', max_length=20)
+    name = models.CharField(verbose_name='标题', help_text='请输入记事标题', max_length=5)
     text = models.TextField(verbose_name='内容', help_text='请输入记事内容', max_length=20)
     s_time = models.DateTimeField(verbose_name='开始时间', help_text='请选择开始时间')
     e_time = models.DateTimeField(verbose_name='结束时间', help_text='请选择结束时间')
     status = models.CharField(verbose_name='状态', help_text='请选择状态', default='U', choices=choices, max_length=1)
 
-
-class Record(models.Model):
-    choices = (
-        ('M', 'Modify'),
-        ('A', 'Add'),
-        ('F', 'Finish'),
-        ('C', 'Continue'),
-        ('D', 'Delete'),
-        ('R', 'Ruin')
-    )
-
-    n_id = models.IntegerField(verbose_name='序号', help_text='请输入记事序号')
-    time = models.DateTimeField(verbose_name='时间', help_text='请选择操作时间')
-    status = models.CharField(verbose_name='状态', help_text='请选择状态', choices=choices, max_length=1)
 
