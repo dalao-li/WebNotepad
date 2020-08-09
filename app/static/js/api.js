@@ -50,8 +50,8 @@ function addNote() {
 
 function delNote(n_id) {
     swal({
-            title: "确定要删除该笔记吗",
-            text: "删除后可在回收站内恢复",
+            title: "确定要删除该记事吗？",
+            text: "删除不可恢复",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",

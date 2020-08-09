@@ -30,7 +30,9 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <h2>记事本</h2>
+    <h2><i class="fa fa-book"></i>
+        记事本
+    </h2>
 </div>
 
 <button id="addNoteButton" type="button" class="btn btn-primary btn-lg">添加
@@ -48,7 +50,10 @@
         <th>开始时间</th>
         <th>结束时间</th>
         <th>状态</th>
-        <th>操作</th>
+        <th>
+            <i class="fa fa-cog"></i>
+            操作
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -74,8 +79,8 @@
                         <i class="fa fa-check-square-o" style="font-size:20px"></i>
                     </button>
                 {% endif %}
-                <button type="button" class="btn btn-danger">删除
-                    <i class="fa fa-trash" style="font-size:20px" onclick=delNote("{{ i.id }}")></i>
+                <button type="button" class="btn btn-danger" onclick=delNote("{{ i.id }}")>删除
+                    <i class="fa fa-trash" style="font-size:20px"></i>
                 </button>
             </td>
         </tr>
@@ -154,7 +159,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">
-                    <i class="fa fa-edit" style="font-size:28px"> 修改记事</i>
+                    <i class="fa fa-wrench"> 修改记事</i>
                 </h4>
             </div>
             <div class="modal-body">
