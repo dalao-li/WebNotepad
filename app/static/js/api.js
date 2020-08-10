@@ -8,36 +8,25 @@ function sendAjax(param, url, callback) {
         data: JSON.stringify(param),
         //服务器返回的数据类型
         dataType: "json",
-        success: function (data) {
+        success: function (data)  {
             callback(data.result)
         },
-        error: function (data) {
+        error: function ()  {
             //错误处理
         }
     })
 }
 
-function addNote() {
-    var d = {}
-    //表单是否存在空值
-    var isNull = false
-    var t = $('#newNoteForm').serializeArray()
-    $.each(t, function () {
-        if (this.value === "") {
-            isNull = true
+function addNote(data) {
+    for (var k in data) {
+        if (data.hasOwnProperty(k) && data[k] === "") {
             swal("填写内容不能为空", "请重写填写", "error")
-            // return false才代表退出each()函数
-            return false
+            return
         }
-        d[this.name] = this.value
-    })
-    //若存在空值则不发送ajax
-    if (isNull) {
-        return
     }
-    sendAjax(d, '/app/add/', function (value) {
+    sendAjax(data, '/app/add/', (value) => {
         if (value === 1) {
-            swal({title: "添加成功", text: "", type: "success", timer: 2000}, function () {
+            swal({title: "添加成功", text: "", type: "success", timer: 2000}, () => {
                 location.href = '/app/'
             })
         }
@@ -57,17 +46,15 @@ function delNote(n_id) {
             closeOnConfirm: false,
             closeOnCancel: false
         },
-        function (isConfirm) {
+        (isConfirm) => {
             if (!isConfirm) {
                 swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
                 return
             }
-            var data = {
-                'n_id': n_id,
-            }
-            sendAjax(data, '/app/del/', function (value) {
+            var data = {'id': n_id}
+            sendAjax(data, '/app/del/', (value) => {
                 if (value === 1) {
-                    swal({title: "删除成功", text: "", type: "success", timer: 2000}, function () {
+                    swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
                         location.reload()
                     })
                 }
@@ -85,9 +72,9 @@ function finishNote(n_id) {
         'n_id': n_id,
         'status': 'F'
     }
-    sendAjax(data, '/app/change/', function (value) {
+    sendAjax(data, '/app/change/', (value) => {
         if (value === 1) {
-            swal({title: "记事已完成", text: "", type: "success", timer: 2000}, function () {
+            swal({title: "记事已完成", text: "", type: "success", timer: 2000}, () => {
                 location.reload()
             })
         }
@@ -98,26 +85,16 @@ function finishNote(n_id) {
 }
 
 
-function modifyNote() {
-    var d = {}
-    //表单是否存在空值
-    var isNull = false
-    var t = $('#modifyNoteForm').serializeArray()
-    $.each(t, function () {
-        if (this.value === "") {
-            isNull = true
-            // return false才代表退出each()函数
-            return false
+function modifyNote(data) {
+     for (var k in data) {
+        if (data.hasOwnProperty(k) && data[k] === "") {
+            swal("填写内容不能为空", "请重写填写", "error")
+            return
         }
-        d[this.name] = this.value
-    })
-    //若存在空值则不发送ajax
-    if (isNull) {
-        return
     }
-    sendAjax(d, '/app/add/', function (value) {
+    sendAjax(data, '/app/modify/', (value) => {
         if (value === 1) {
-            swal({title: "修改成功", text: "", type: "success", timer: 2000}, function () {
+            swal({title: "修改成功", text: "", type: "success", timer: 2000}, () => {
                 location.href = '/app/'
             })
         }

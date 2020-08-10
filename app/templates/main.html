@@ -36,7 +36,7 @@
     </h2>
 </div>
 
-<button id="addNoteButton" type="button" class="btn btn-primary btn-lg">添加
+<button id="addNoteBtn" type="button" class="btn btn-primary btn-lg">添加
     <i class="fa fa-plus-square" style="font-size:20px"></i>
 </button>
 
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" onclick=addNote()>提交
+                        <button type="submit" class="btn btn-primary" id="submitNoteBtn">提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
@@ -209,7 +209,7 @@
                                required>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" onclick=modifyNote()>提交
+                        <button type="submit" class="btn btn-primary" id="modifyNoteBtn">提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
@@ -226,7 +226,7 @@
 
     $('#noteTable').bootstrapTable({
         //点击行事件
-        onDblClickRow: function (row) {
+        onDblClickRow: (row) => {
             if (row[5] === '进行中') {
                 $('#modifyNoteAlert').modal('show')
                 $('#id').val(row[0])
@@ -249,8 +249,26 @@
         search: true,
     })
 
-    $('#addNoteButton').click(function () {
+    $('#addNoteBtn').click(() => {
         $('#newNoteAlert').modal('show')
+    })
+
+    $('#submitNoteBtn').click(() => {
+        var data = {}
+        var t = $('#newNoteForm').serializeArray()
+        $.each(t, function ()  {
+            data[this.name] = this.value
+        })
+        addNote(data)
+    })
+
+    $('#modifyNoteBtn').click(()=>{
+        var data = {}
+        var t = $('#modifyNoteForm').serializeArray()
+        $.each(t, function() {
+            data[this.name] = this.value
+        })
+        modifyNote(data)
     })
 
 </script>
