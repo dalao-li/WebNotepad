@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -44,7 +45,6 @@
     <thead>
     <tr>
         <th>序号</th>
-
         <th>标题</th>
         <th>正文</th>
         <th>开始时间</th>
@@ -99,14 +99,14 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <!--上传信息表格-->
-                <form id="newNoteForm" action="" onsubmit="return false">
+                <form id="newNoteForm" action="" onsubmit="return false;">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">标题</span>
                         </div>
                         <label for="name"></label>
-                        <input type="text" class="form-control" id="name" name="name" required>
+                        <input type="text" class="form-control" id="name" name="name" maxlength="10"
+                               placeholder="标题最大长度为10个字符" required="required">
                     </div>
 
                     <div class="input-group mb-3">
@@ -114,7 +114,8 @@
                             <span class="input-group-text">内容</span>
                         </div>
                         <label for="text"></label>
-                        <input type="text" class="form-control" id="text" name="text" required>
+                        <input type="text" class="form-control" id="text" name="text" maxlength="20"
+                               placeholder="内容最大长度为20个字符" required="required">
                     </div>
 
                     <div class="input-group mb-3">
@@ -124,7 +125,7 @@
                         <label for="startTime"></label>
                         <input type="datetime-local" class="form-control" id="startTime" name="startTime"
                                placeholder="请选择开始时间"
-                               required>
+                               required="required">
                     </div>
 
                     <div class="input-group mb-3">
@@ -134,11 +135,11 @@
                         <label for="endTime"></label>
                         <input type="datetime-local" class="form-control" id="endTime" name="endTime"
                                placeholder="请选择结束时间"
-                               required>
+                               required="required">
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick=addNote()>提交
+                        <button type="submit" class="btn btn-primary" onclick=addNote()>提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
@@ -208,7 +209,7 @@
                                required>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick=modifyNote()>提交
+                        <button type="submit" class="btn btn-primary" onclick=modifyNote()>提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭

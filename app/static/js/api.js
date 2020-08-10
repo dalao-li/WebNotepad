@@ -25,7 +25,7 @@ function addNote() {
     $.each(t, function () {
         if (this.value === "") {
             isNull = true
-            addCallback(0)
+            swal("填写内容不能为空", "请重写填写", "error")
             // return false才代表退出each()函数
             return false
         }
@@ -50,23 +50,16 @@ function addNote() {
 
 function delNote(n_id) {
     swal({
-            title: "确定要删除该记事吗？",
-            text: "删除不可恢复",
-            type: "warning",
+            title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "确认",
-            cancelButtonText: "取消",
+            confirmButtonText: "确认", cancelButtonText: "取消",
             closeOnConfirm: false,
             closeOnCancel: false
         },
         function (isConfirm) {
             if (!isConfirm) {
-                swal({
-                    title: "已取消",
-                    text: "您取消了删除操作！",
-                    type: "warning"
-                })
+                swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
                 return
             }
             var data = {
@@ -113,7 +106,6 @@ function modifyNote() {
     $.each(t, function () {
         if (this.value === "") {
             isNull = true
-            addCallback(0)
             // return false才代表退出each()函数
             return false
         }
@@ -125,12 +117,7 @@ function modifyNote() {
     }
     sendAjax(d, '/app/add/', function (value) {
         if (value === 1) {
-            swal({
-                title: "修改成功",
-                text: "",
-                type: "success",
-                timer: 2000
-            }, function () {
+            swal({title: "修改成功", text: "", type: "success", timer: 2000}, function () {
                 location.href = '/app/'
             })
         }
