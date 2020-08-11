@@ -17,6 +17,7 @@ function sendAjax(param, url, callback) {
     })
 }
 
+
 function addNote(form) {
     const data = {}
     const t = form.serializeArray()
@@ -30,7 +31,12 @@ function addNote(form) {
     }
     sendAjax(data, '/app/add/', (value) => {
         if (value === 1) {
-            swal({title: "添加成功", text: "", type: "success", timer: 2000}, () => {
+            swal({
+                title: "添加成功",
+                text: "",
+                type: "success",
+                timer: 2000
+            }, () => {
                 location.href = '/app/'
             })
         }
@@ -58,7 +64,12 @@ function delNote(n_id) {
             const data = {'id': n_id}
             sendAjax(data, '/app/del/', (value) => {
                 if (value === 1) {
-                    swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
+                    swal({
+                        title: "删除成功",
+                        text: "",
+                        type: "success",
+                        timer: 2000
+                    }, () => {
                         location.reload()
                     })
                 }
@@ -78,7 +89,12 @@ function finishNote(n_id) {
     }
     sendAjax(data, '/app/change/', (value) => {
         if (value === 1) {
-            swal({title: "记事已完成", text: "", type: "success", timer: 2000}, () => {
+            swal({
+                title: "记事已完成",
+                text: "",
+                type: "success",
+                timer: 2000
+            }, () => {
                 location.reload()
             })
         }
@@ -102,7 +118,12 @@ function modifyNote(form) {
     }
     sendAjax(data, '/app/modify/', (value) => {
         if (value === 1) {
-            swal({title: "修改成功", text: "", type: "success", timer: 2000}, () => {
+            swal({
+                title: "修改成功",
+                text: "",
+                type: "success",
+                timer: 2000
+            }, () => {
                 location.href = '/app/'
             })
         }

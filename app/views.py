@@ -13,10 +13,6 @@ def main_page(request):
     return render(request, 'main.html', {'note': notes})
 
 
-def recycle_bin_page(request):
-    # TODO
-    pass
-
 
 def add_note(request):
     data = json.loads(request.body)

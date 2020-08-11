@@ -24,4 +24,4 @@ RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
 COPY . .
 
 
-CMD ["gunicorn", "demo.wsgi", "-c", "gunicorn_config.py"]
+CMD ["gunicorn", "Notepad.wsgi", "-c", "gunicorn_config.py"]
