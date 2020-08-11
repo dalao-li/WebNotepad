@@ -36,12 +36,12 @@
     </h2>
 </div>
 
-<button id="addNoteBtn" type="button" class="btn btn-primary btn-lg">添加
+<button type="button" class="btn btn-primary btn-lg" onclick="$('#addModal').modal('show')">添加
     <i class="fa fa-plus-square" style="font-size:20px"></i>
 </button>
 
 
-<table id="noteTable" class="table table-hover">
+<table id="noteList" class="table table-hover">
     <thead>
     <tr>
         <th>序号</th>
@@ -89,7 +89,7 @@
 </table>
 
 <!--添加笔记弹出框-->
-<div id="newNoteAlert" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="submitNoteBtn">提交
+                        <button type="submit" class="btn btn-primary" onclick="addNote($('#newNoteForm'))">提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
@@ -154,7 +154,7 @@
 
 
 <!--修改笔记弹出框-->
-<div id="modifyNoteAlert" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div id="modifyModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -170,7 +170,7 @@
                             <span class="input-group-text">记事序号</span>
                         </div>
                         <label for="id"></label>
-                        <input type="text" class="form-control" id="id" name="id" required disabled>
+                        <input type="text" class="form-control" id="id" name="id" required readonly>
                     </div>
 
                     <div class="input-group mb-3">
@@ -209,7 +209,7 @@
                                required>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="modifyNoteBtn">提交
+                        <button type="submit" class="btn btn-primary" onclick="modifyNote($('#modifyNoteForm'))">提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
@@ -224,16 +224,15 @@
 
 <script>
 
-    $('#noteTable').bootstrapTable({
+    $('#noteList').bootstrapTable({
         //点击行事件
         onDblClickRow: (row) => {
             if (row[5] === '进行中') {
-                $('#modifyNoteAlert').modal('show')
+                $('#modifyModal').modal('show')
                 $('#id').val(row[0])
                 $('#names').val(row[1])
                 $('#texts').val(row[2])
             }
-
         },
         //是否显示分页条
         pagination: true,
@@ -248,29 +247,6 @@
         //启用关键字搜索框
         search: true,
     })
-
-    $('#addNoteBtn').click(() => {
-        $('#newNoteAlert').modal('show')
-    })
-
-    $('#submitNoteBtn').click(() => {
-        var data = {}
-        var t = $('#newNoteForm').serializeArray()
-        $.each(t, function ()  {
-            data[this.name] = this.value
-        })
-        addNote(data)
-    })
-
-    $('#modifyNoteBtn').click(()=>{
-        var data = {}
-        var t = $('#modifyNoteForm').serializeArray()
-        $.each(t, function() {
-            data[this.name] = this.value
-        })
-        modifyNote(data)
-    })
-
 </script>
 </body>
 </html>

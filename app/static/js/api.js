@@ -8,19 +8,23 @@ function sendAjax(param, url, callback) {
         data: JSON.stringify(param),
         //服务器返回的数据类型
         dataType: "json",
-        success: function (data)  {
+        success: function (data) {
             callback(data.result)
         },
-        error: function ()  {
+        error: function () {
             //错误处理
         }
     })
 }
 
-function addNote(data) {
-    for (var k in data) {
+function addNote(form) {
+    const data = {}
+    const t = form.serializeArray()
+    $.each(t, function () {
+        data[this.name] = this.value
+    })
+    for (const k in data) {
         if (data.hasOwnProperty(k) && data[k] === "") {
-            swal("填写内容不能为空", "请重写填写", "error")
             return
         }
     }
@@ -51,7 +55,7 @@ function delNote(n_id) {
                 swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
                 return
             }
-            var data = {'id': n_id}
+            const data = {'id': n_id}
             sendAjax(data, '/app/del/', (value) => {
                 if (value === 1) {
                     swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
@@ -68,8 +72,8 @@ function delNote(n_id) {
 
 
 function finishNote(n_id) {
-    var data = {
-        'n_id': n_id,
+    const data = {
+        'id': n_id,
         'status': 'F'
     }
     sendAjax(data, '/app/change/', (value) => {
@@ -85,10 +89,14 @@ function finishNote(n_id) {
 }
 
 
-function modifyNote(data) {
-     for (var k in data) {
+function modifyNote(form) {
+    const data = {}
+    const t = form.serializeArray()
+    $.each(t, function () {
+        data[this.name] = this.value
+    })
+    for (const k in data) {
         if (data.hasOwnProperty(k) && data[k] === "") {
-            swal("填写内容不能为空", "请重写填写", "error")
             return
         }
     }

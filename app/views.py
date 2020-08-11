@@ -20,7 +20,6 @@ def recycle_bin_page(request):
 
 def add_note(request):
     data = json.loads(request.body)
-    print(data)
     name, text, s_time, e_time = data.values()
     Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status='U')
     return HttpResponse(json.dumps({'result': 1}))
@@ -28,6 +27,7 @@ def add_note(request):
 
 def modify_note(request):
     data = json.loads(request.body)
+    print(data)
     n_id, name, text, s_time, e_time = data.values()
     Note.objects.filter(id=n_id).update(name=name, text=text,s_time=s_time, e_time=e_time)
     return HttpResponse(json.dumps({'result': 1}))
