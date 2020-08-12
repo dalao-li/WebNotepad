@@ -18,12 +18,7 @@ function sendAjax(param, url, callback) {
 }
 
 
-function addNote(form) {
-    const data = {}
-    const t = form.serializeArray()
-    $.each(t, function () {
-        data[this.name] = this.value
-    })
+function addNote(data) {
     for (const k in data) {
         if (data.hasOwnProperty(k) && data[k] === "") {
             return
@@ -49,35 +44,34 @@ function addNote(form) {
 
 function delNote(n_id) {
     swal({
-            title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "确认", cancelButtonText: "取消",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        },
-        (isConfirm) => {
-            if (!isConfirm) {
-                swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
-                return
-            }
-            const data = {'id': n_id}
-            sendAjax(data, '/app/del/', (value) => {
-                if (value === 1) {
-                    swal({
-                        title: "删除成功",
-                        text: "",
-                        type: "success",
-                        timer: 2000
-                    }, () => {
-                        location.reload()
-                    })
-                }
-                if (value === -1) {
-                    swal("删除失败", "请重试", "error")
-                }
-            })
+        title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "确认", cancelButtonText: "取消",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    }, (isConfirm) => {
+        if (!isConfirm) {
+            swal({ title: "已取消", text: "您取消了删除操作！", type: "warning" })
+            return
         }
+        const data = { 'id': n_id }
+        sendAjax(data, '/app/del/', (value) => {
+            if (value === 1) {
+                swal({
+                    title: "删除成功",
+                    text: "",
+                    type: "success",
+                    timer: 2000
+                }, () => {
+                    location.reload()
+                })
+            }
+            if (value === -1) {
+                swal("删除失败", "请重试", "error")
+            }
+        })
+    }
     )
 }
 
@@ -87,7 +81,7 @@ function finishNote(n_id) {
         'id': n_id,
         'status': 'F'
     }
-    sendAjax(data, '/app/change/', (value) => {
+    sendAjax(data, '/app/finish/', (value) => {
         if (value === 1) {
             swal({
                 title: "记事已完成",
@@ -105,18 +99,13 @@ function finishNote(n_id) {
 }
 
 
-function modifyNote(form) {
-    const data = {}
-    const t = form.serializeArray()
-    $.each(t, function () {
-        data[this.name] = this.value
-    })
+function editNote(data) {
     for (const k in data) {
         if (data.hasOwnProperty(k) && data[k] === "") {
             return
         }
     }
-    sendAjax(data, '/app/modify/', (value) => {
+    sendAjax(data, '/app/edit/', (value) => {
         if (value === 1) {
             swal({
                 title: "修改成功",

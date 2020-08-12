@@ -13,19 +13,20 @@ def main_page(request):
     return render(request, 'main.html', {'note': notes})
 
 
-
 def add_note(request):
     data = json.loads(request.body)
     name, text, s_time, e_time = data.values()
-    Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status='U')
+    Note.objects.create(name=name, text=text, s_time=s_time,
+                        e_time=e_time, status='U')
     return HttpResponse(json.dumps({'result': 1}))
 
 
-def modify_note(request):
+def edit_note(request):
     data = json.loads(request.body)
     print(data)
     n_id, name, text, s_time, e_time = data.values()
-    Note.objects.filter(id=n_id).update(name=name, text=text,s_time=s_time, e_time=e_time)
+    Note.objects.filter(id=n_id).update(
+        name=name, text=text, s_time=s_time, e_time=e_time)
     return HttpResponse(json.dumps({'result': 1}))
 
 
@@ -37,7 +38,8 @@ def del_note(request):
         return HttpResponse(json.dumps({'result': -1}))
     return HttpResponse(json.dumps({'result': 1}))
 
-def change_note_status(request):
+
+def finish_note(request):
     data = json.loads(request.body)
     n_id, status = data.values()
     Note.objects.filter(id=n_id).update(status=status)

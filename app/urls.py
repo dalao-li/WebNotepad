@@ -5,14 +5,13 @@ urlpatterns = [
     # 将函数绑定至对应路由
     path('', views.main_page),
 
-    path('add/',views.add_note),
+    path('add/', views.add_note),
 
-    path('del/',views.del_note),
+    path('del/', views.del_note),
 
-    path('modify/',views.modify_note),
+    path('edit/', views.edit_note),
 
-    path('change/',views.change_note_status)
+    path('finish/', views.finish_note)
 
 
 ]
-
