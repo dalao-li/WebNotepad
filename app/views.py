@@ -9,15 +9,15 @@ from app.models import Note
 # 主页面
 def main_page(request):
     # 获取所有未被删除的文章
-    notes = [i for i in Note.objects.exclude(status='D')]
+    notes = [i for i in Note.objects.all()]
     return render(request, 'main.html', {'note': notes})
 
 
 def add_note(request):
     data = json.loads(request.body)
     name, text, s_time, e_time = data.values()
-    Note.objects.create(name=name, text=text, s_time=s_time,
-                        e_time=e_time, status='U')
+    Note.objects.create(
+        name=name, text=text, s_time=s_time, e_time=e_time, status='U')
     return HttpResponse(json.dumps({'result': 1}))
 
 
