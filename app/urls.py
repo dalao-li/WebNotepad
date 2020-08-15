@@ -7,6 +7,8 @@ urlpatterns = [
 
     path('add/', views.add_note),
 
+    path('ruin/', views.ruin_note),
+
     path('del/', views.del_note),
 
     path('edit/', views.edit_note),

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -19,252 +19,259 @@
     <script src="{% static 'js/bootstrap-table-zh-CN.min.js' %}"></script>
     <script src="{% static 'js/api.js' %}"></script>
     <style>
-        .danger {
+        .underway {
             color: red;
             font-weight: bold;
         }
 
-        .safe {
+        .finish {
             color: green;
+            font-weight: bold;
+        }
+
+        .overtime {
+            color: orange;
             font-weight: bold;
         }
     </style>
 </head>
 
 <body>
-    <div style="text-align: center;">
-        <h2><i class="fa fa-book"></i>
-            记事本
-        </h2>
-    </div>
+<div style="text-align: center;">
+    <h2><i class="fa fa-book"></i>
+        记事本
+    </h2>
+</div>
 
-    <button type="button" class="btn btn-primary btn-lg" onclick="$('#addModal').modal('show')">添加
-        <i class="fa fa-plus-square" style="font-size:20px"></i>
-    </button>
+<button type="button" class="btn btn-primary btn-lg" onclick="$('#addModal').modal('show')">添加
+    <i class="fa fa-plus-square" style="font-size:20px"></i>
+</button>
 
 
-    <table id="noteList" class="table table-hover">
-        <thead>
-            <tr>
-                <th>序号</th>
-                <th>标题</th>
-                <th>正文</th>
-                <th>开始时间</th>
-                <th>结束时间</th>
-                <th>状态</th>
-                <th>
-                    <i class="fa fa-cog"></i>
-                    操作
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in note %}
-            <tr>
-                <td>{{ i.id }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.text }}</td>
-                <td>{{ i.s_time }}</td>
-                <td>{{ i.e_time }}</td>
-                {% if i.status == 'F' %}
-                <td class="danger">已完成</td>
-                {% elif i.status == 'U' %}
-                <td class="safe">进行中</td>
-                {% endif %}
-                <td>
-                    {% if i.status == 'F' %}
+<table id="noteList" class="table table-hover">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>标题</th>
+        <th>正文</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>状态</th>
+        <th>
+            <i class="fa fa-cog"></i>
+            操作
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in note %}
+        <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.text }}</td>
+            <td>{{ i.s_time }}</td>
+            <td>{{ i.e_time }}</td>
+            {% if i.status == 'F' %}
+                <td class="underway">已完成</td>
+            {% elif i.status == 'U' %}
+                <td class="finish">进行中</td>
+            {% elif i.status == 'O' %}
+                <td class="overtime">已超时</td>
+            {% endif %}
+            <td>
+                {% if i.status == 'F' or i.status == 'O' %}
                     <button type="button" class="btn btn-success" onclick="" disabled>完成
                         <i class="fa fa-check-square-o" style="font-size:20px"></i>
                     </button>
-                    {% elif i.status == 'U' %}
+                {% elif i.status == 'U' %}
                     <button type="button" class="btn btn-success" onclick=finishNote("{{ i.id }}")>完成
                         <i class="fa fa-check-square-o" style="font-size:20px"></i>
                     </button>
-                    {% endif %}
-                    <button type="button" class="btn btn-danger" onclick=delNote("{{ i.id }}")>删除
-                        <i class="fa fa-trash" style="font-size:20px"></i>
-                    </button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endif %}
+                <button type="button" class="btn btn-danger" onclick=delNote("{{ i.id }}")>删除
+                    <i class="fa fa-trash" style="font-size:20px"></i>
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
-    <!--添加笔记弹出框-->
-    <div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">
-                        <i class="fa fa-user-plus" style="font-size:28px"></i>
-                        新增记事
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <form id="addNoteForm" action="" onsubmit="return false;">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">标题</span>
-                            </div>
-                            <label for="name"></label>
-                            <input type="text" class="form-control" id="name" name="name" maxlength="10"
-                                placeholder="标题最大长度为10个字符" required="required">
+<!--添加笔记弹出框-->
+<div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    <i class="fa fa-user-plus" style="font-size:28px"></i>
+                    新增记事
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="addNoteForm" action="" onsubmit="return false;">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">标题</span>
                         </div>
+                        <label for="name"></label>
+                        <input type="text" class="form-control" id="name" name="name" maxlength="10"
+                               placeholder="标题最大长度为10个字符" required="required">
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">内容</span>
-                            </div>
-                            <label for="text"></label>
-                            <input type="text" class="form-control" id="text" name="text" maxlength="20"
-                                placeholder="内容最大长度为20个字符" required="required">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">内容</span>
                         </div>
+                        <label for="text"></label>
+                        <input type="text" class="form-control" id="text" name="text" maxlength="20"
+                               placeholder="内容最大长度为20个字符" required="required">
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">开始时间</span>
-                            </div>
-                            <label for="startTime"></label>
-                            <input type="datetime-local" class="form-control" id="startTime" name="startTime"
-                                placeholder="请选择开始时间" required="required">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">开始时间</span>
                         </div>
+                        <label for="startTime"></label>
+                        <input type="datetime-local" class="form-control" id="startTime" name="startTime"
+                               placeholder="请选择开始时间" required="required">
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">结束时间</span>
-                            </div>
-                            <label for="endTime"></label>
-                            <input type="datetime-local" class="form-control" id="endTime" name="endTime"
-                                placeholder="请选择结束时间" required="required">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">结束时间</span>
                         </div>
+                        <label for="endTime"></label>
+                        <input type="datetime-local" class="form-control" id="endTime" name="endTime"
+                               placeholder="请选择结束时间" required="required">
+                    </div>
 
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="addBtn">提交
-                                <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
-                                <i class="fa fa-times" style="font-size:20px"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="addBtn">提交
+                            <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
+                            <i class="fa fa-times" style="font-size:20px"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 
-    <!--修改笔记弹出框-->
-    <div id="editModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">
-                        <i class="fa fa-wrench"> 修改记事</i>
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <form id="editNoteForm" action="" onsubmit="return false">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">记事序号</span>
-                            </div>
-                            <label for="id"></label>
-                            <input type="text" class="form-control" id="id" name="id" required readonly>
+<!--修改笔记弹出框-->
+<div id="editModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    <i class="fa fa-wrench"> 修改记事</i>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form id="editNoteForm" action="" onsubmit="return false">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">记事序号</span>
                         </div>
+                        <label for="id"></label>
+                        <input type="text" class="form-control" id="id" name="id" required readonly>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">标题</span>
-                            </div>
-                            <label for="names"></label>
-                            <input type="text" class="form-control" id="names" name="names" required>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">标题</span>
                         </div>
+                        <label for="names"></label>
+                        <input type="text" class="form-control" id="names" name="names" required>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">内容</span>
-                            </div>
-                            <label for="texts"></label>
-                            <input type="text" class="form-control" id="texts" name="texts" required>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">内容</span>
                         </div>
+                        <label for="texts"></label>
+                        <input type="text" class="form-control" id="texts" name="texts" required>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">开始时间</span>
-                            </div>
-                            <label for="startTimes"></label>
-                            <input type="datetime-local" class="form-control" id="startTimes" name="startTimes"
-                                placeholder="请选择开始时间" required>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">开始时间</span>
                         </div>
+                        <label for="startTimes"></label>
+                        <input type="datetime-local" class="form-control" id="startTimes" name="startTimes"
+                               placeholder="请选择开始时间" required>
+                    </div>
 
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">结束时间</span>
-                            </div>
-                            <label for="endTimes"></label>
-                            <input type="datetime-local" class="form-control" id="endTimes" name="endTimes"
-                                placeholder="请选择结束时间" required>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">结束时间</span>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="editBtn">提交
-                                <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
-                                <i class="fa fa-times" style="font-size:20px"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                        <label for="endTimes"></label>
+                        <input type="datetime-local" class="form-control" id="endTimes" name="endTimes"
+                               placeholder="请选择结束时间" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="editBtn">提交
+                            <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
+                            <i class="fa fa-times" style="font-size:20px"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
+<script>
 
-        $('#noteList').bootstrapTable({
-            //点击行事件
-            onDblClickRow: (row) => {
-                if (row[5] === '进行中') {
-                    $('#editModal').modal('show')
-                    $('#id').val(row[0])
-                    $('#names').val(row[1])
-                    $('#texts').val(row[2])
-                }
-            },
-            //是否显示分页条
-            pagination: true,
-            //首页页码
-            pageNumber: 1,
-            //一页显示的行数
-            pageSize: 10,
-            //是否开启分页条无限循环，最后一页时点击下一页是否转到第一页
-            paginationLoop: false,
-            //选择每页显示多少行，数据过少时可能会没有效果
-            pageList: [10, 20],
-            //启用关键字搜索框
-            search: true,
+    $('#noteList').bootstrapTable({
+        //点击行事件
+        onDblClickRow: (row) => {
+            if (row[5] === '进行中') {
+                $('#editModal').modal('show')
+                $('#id').val(row[0])
+                $('#names').val(row[1])
+                $('#texts').val(row[2])
+            }
+        },
+        //是否显示分页条
+        pagination: true,
+        //首页页码
+        pageNumber: 1,
+        //一页显示的行数
+        pageSize: 10,
+        //是否开启分页条无限循环，最后一页时点击下一页是否转到第一页
+        paginationLoop: false,
+        //选择每页显示多少行，数据过少时可能会没有效果
+        pageList: [10, 20],
+        //启用关键字搜索框
+        search: true,
+    })
+
+
+    $('#addBtn').click(function () {
+        var data = {}
+        const t = $('#addNoteForm').serializeArray()
+        $.each(t, function () {
+            data[this.name] = this.value
         })
+        addNote(data)
+    })
 
-
-        $('#addBtn').click(function () {
-            const data = {}
-            const t = $('#addNoteForm').serializeArray()
-            $.each(t, function () {
-                data[this.name] = this.value
-            })
-            addNote(data)
+    $('#editBtn').click(function () {
+        var data = {}
+        const t = $('#editNoteForm').serializeArray()
+        $.each(t, function () {
+            data[this.name] = this.value
         })
-
-        $('#editBtn').click(function () {
-            const data = {}
-            const t = $('#editNoteForm').serializeArray()
-            $.each(t, function () {
-                data[this.name] = this.value
-            })
-            editNote(data)
-        })
-    </script>
+        editNote(data)
+    })
+</script>
 </body>
 
 </html>

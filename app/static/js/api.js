@@ -27,67 +27,61 @@ function addNote(data) {
     sendAjax(data, '/app/add/', (value) => {
         if (value === 1) {
             swal({
-                title: "添加成功",
-                text: "",
-                type: "success",
-                timer: 2000
+                title: "添加成功", text: "", type: "success", timer: 2000
             }, () => {
                 location.href = '/app/'
             })
+            return
         }
-        if (value === 0) {
-            swal("填写内容不能为空", "请重写填写", "error")
+        const error = {
+            "0": "填写内容不能为空",
+            "-1": "开始时间必须大于结束时间",
+            "-2": "结束时间必须大于当前时间",
+            "-3": "填写内容不能超过指定长度"
         }
+        swal(error[value.toString()], "请重写填写", "error")
+
     })
 }
 
 
-function delNote(n_id) {
+function delNote(id) {
     swal({
-        title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "确认", cancelButtonText: "取消",
-        closeOnConfirm: false,
-        closeOnCancel: false
-    }, (isConfirm) => {
-        if (!isConfirm) {
-            swal({ title: "已取消", text: "您取消了删除操作！", type: "warning" })
-            return
+            title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认", cancelButtonText: "取消",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, (isConfirm) => {
+            if (!isConfirm) {
+                swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
+                return
+            }
+            const data = {'id': id}
+            sendAjax(data, '/app/ruin/', (value) => {
+                if (value === 1) {
+                    swal({
+                        title: "删除成功", text: "", type: "success", timer: 2000
+                    }, () => {
+                        location.reload()
+                    })
+                }
+                if (value === -1) {
+                    swal("删除失败", "请重试", "error")
+                }
+            })
         }
-        const data = { 'id': n_id }
-        sendAjax(data, '/app/del/', (value) => {
-            if (value === 1) {
-                swal({
-                    title: "删除成功",
-                    text: "",
-                    type: "success",
-                    timer: 2000
-                }, () => {
-                    location.reload()
-                })
-            }
-            if (value === -1) {
-                swal("删除失败", "请重试", "error")
-            }
-        })
-    }
     )
 }
 
 
-function finishNote(n_id) {
-    const data = {
-        'id': n_id,
-        'status': 'F'
-    }
+function finishNote(id) {
+    const data = {'id': id}
     sendAjax(data, '/app/finish/', (value) => {
         if (value === 1) {
             swal({
-                title: "记事已完成",
-                text: "",
-                type: "success",
-                timer: 2000
+                title: "记事已完成", text: "", type: "success", timer: 2000
             }, () => {
                 location.reload()
             })
@@ -108,17 +102,19 @@ function editNote(data) {
     sendAjax(data, '/app/edit/', (value) => {
         if (value === 1) {
             swal({
-                title: "修改成功",
-                text: "",
-                type: "success",
-                timer: 2000
+                title: "修改成功", text: "", type: "success", timer: 2000
             }, () => {
                 location.href = '/app/'
             })
+            return
         }
-        if (value === 0) {
-            swal("填写内容不能为空", "请重写填写", "error")
+        const error = {
+            "0": "填写内容不能为空",
+            "-1": "开始时间必须大于结束时间",
+            "-2": "结束时间必须大于当前时间",
+            "-3": "填写内容不能超过指定长度"
         }
+        swal(error[value.toString()], "请重写填写", "error")
     })
 }
 
