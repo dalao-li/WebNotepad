@@ -1,6 +1,4 @@
 import datetime as datetime
-
-# from datetime import datetime
 import json
 
 from django.shortcuts import render, HttpResponse
@@ -16,6 +14,11 @@ def main_page(request):
     # 更新记事状态
     update_note_status(notes)
     return render(request, 'main.html', {'note': notes})
+
+
+def recover_page(request):
+    notes = [i for i in Note.objects.filter(status='D')]
+    return render(request, 'recover.html', {'note': notes})
 
 
 def add_note(request):
@@ -68,15 +71,22 @@ def change_status(n_id, status):
     return -1
 
 
-# 判断记事是否超过结束时间
+# 判断记事状态
 def update_note_status(notes):
-    current_time = datetime.datetime.now()
     # 获取所有未删除记事
+    global status
+    current_time = datetime.datetime.now()
     for i in notes:
-        if current_time > i.e_time:
-            Note.objects.filter(id=i.id).update(status='O')
+        if i.s_time < current_time < i.e_time:
+            status = 'U'
+        elif current_time > i.e_time:
+            status = 'O'
+        elif current_time < i.s_time:
+            status = 'P'
+        Note.objects.filter(id=i.id).update(status=status)
 
 
+# 判断前端输入格式
 def judge_input(data):
     for i in data.keys():
         if data[i] == '':

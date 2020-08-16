@@ -5,13 +5,14 @@ from django.db import models
 
 class Note(models.Model):
     """
-    进行中 完成 删除 超时
+    进行中 完成 删除 超时 为开始
     """
     choices = (
         ('U', 'Underway'),
         ('F', 'Finish'),
         ('D', 'Deleted'),
-        ('O', 'Overtime')
+        ('O', 'Overtime'),
+        ('P', 'Plan')
     )
 
     name = models.CharField(verbose_name='标题', max_length=5)

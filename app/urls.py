@@ -5,6 +5,8 @@ urlpatterns = [
     # 将函数绑定至对应路由
     path('', views.main_page),
 
+    path('recover/', views.recover_page),
+
     path('add/', views.add_note),
 
     path('ruin/', views.ruin_note),
@@ -14,6 +16,5 @@ urlpatterns = [
     path('edit/', views.edit_note),
 
     path('finish/', views.finish_note)
-
 
 ]

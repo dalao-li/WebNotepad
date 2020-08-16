@@ -34,8 +34,8 @@
         </h2>
     </div>
 
-    <button type="button" class="btn btn-primary btn-lg" onclick="">返回主页面
-        <i class="fa fa-plus-square" style="font-size:20px"></i>
+    <button type="button" class="btn btn-primary btn-lg" id="backMain">返回主页面
+        <i class="fa fa-reply" aria-hidden="true" style="font-size:20px"></i>
     </button>
 
 
@@ -72,6 +72,7 @@
                     </button>
                 </td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 
@@ -170,15 +171,9 @@
             search: true,
         })
 
-        TODO: 增加三个按钮的点击事件
-        // $('#addBtn').click(function () {
-        //     const data = {}
-        //     const t = $('#addNoteForm').serializeArray()
-        //     $.each(t, function () {
-        //         data[this.name] = this.value
-        //     })
-        //     addNote(data)
-        // })
+        $('#backMain').click(function () {
+            location.href = '/app/'
+        })
 
 
     </script>

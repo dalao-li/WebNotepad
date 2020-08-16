@@ -40,7 +40,6 @@ function addNote(data) {
             "-3": "填写内容不能超过指定长度"
         }
         swal(error[value.toString()], "请重写填写", "error")
-
     })
 }
 
@@ -53,17 +52,15 @@ function delNote(id) {
             confirmButtonText: "确认", cancelButtonText: "取消",
             closeOnConfirm: false,
             closeOnCancel: false
-        }, (isConfirm) => {
+        }, function (isConfirm) {
             if (!isConfirm) {
                 swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
                 return
             }
-            const data = {'id': id}
-            sendAjax(data, '/app/ruin/', (value) => {
+            var data = {'id': id,}
+            sendAjax(data, '/app/del/', (value) => {
                 if (value === 1) {
-                    swal({
-                        title: "删除成功", text: "", type: "success", timer: 2000
-                    }, () => {
+                    swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
                         location.reload()
                     })
                 }
