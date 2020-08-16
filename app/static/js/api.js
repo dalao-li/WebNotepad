@@ -45,6 +45,21 @@ function addNote(data) {
 
 
 function delNote(id) {
+    var data = {'id': id,}
+    sendAjax(data, '/app/del/', (value) => {
+        if (value === 1) {
+            swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
+                location.reload()
+            })
+        }
+        if (value === -1) {
+            swal("删除失败", "请重试", "error")
+        }
+    })
+}
+
+
+function ruinNote(id) {
     swal({
             title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
             showCancelButton: true,
@@ -58,7 +73,7 @@ function delNote(id) {
                 return
             }
             var data = {'id': id,}
-            sendAjax(data, '/app/del/', (value) => {
+            sendAjax(data, '/app/ruin/', (value) => {
                 if (value === 1) {
                     swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
                         location.reload()
@@ -100,8 +115,8 @@ function editNote(data) {
         if (value === 1) {
             swal({
                 title: "修改成功", text: "", type: "success", timer: 2000
-            }, () => {
-                location.href = '/app/'
+            }, function () {
+                location.reload()
             })
             return
         }
@@ -112,6 +127,22 @@ function editNote(data) {
             "-3": "填写内容不能超过指定长度"
         }
         swal(error[value.toString()], "请重写填写", "error")
+    })
+}
+
+function recoverNote(id) {
+    const data = {'id': id}
+    sendAjax(data, '/app/recover/', (value) => {
+        if (value === 1) {
+            swal({
+                title: "记事已恢复", text: "", type: "success", timer: 2000
+            }, () => {
+                location.reload()
+            })
+        }
+        if (value === -1) {
+            swal("网络异常", "请重试", "error")
+        }
     })
 }
 

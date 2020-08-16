@@ -23,7 +23,7 @@ def recover_page(request):
 
 def add_note(request):
     data = json.loads(request.body)
-    res = judge_input(data)
+    res = judge_input('add', data)
     if res == 1:
         name, text, s_time, e_time = data.values()
         Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status='U')
@@ -32,10 +32,13 @@ def add_note(request):
 
 def edit_note(request):
     data = json.loads(request.body)
-    res = judge_input(data)
+    res = judge_input('edit', data)
+    # 输入合法
     if res == 1:
         n_id, name, text, s_time, e_time = data.values()
-        Note.objects.filter(id=n_id).update(name=name, text=text, s_time=s_time, e_time=e_time)
+        # 获取该记事状态
+        now_status = get_note_status(s_time, e_time)
+        Note.objects.filter(id=n_id).update(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -63,6 +66,16 @@ def del_note(request):
     return HttpResponse(json.dumps({'result': res}))
 
 
+# 恢复记事
+def recover_note(request):
+    data = json.loads(request.body)
+    n_id = list(data.values())[0]
+    note = Note.objects.filter(id=n_id)[0]
+    now_status = get_note_status(note.s_time, note.e_time)
+    res = change_status(n_id, now_status)
+    return HttpResponse(json.dumps({'result': res}))
+
+
 # 改变记事状态
 def change_status(n_id, status):
     Note.objects.filter(id=n_id).update(status=status)
@@ -71,27 +84,47 @@ def change_status(n_id, status):
     return -1
 
 
-# 判断记事状态
+# 批量更新记事状态
 def update_note_status(notes):
     # 获取所有未删除记事
-    global status
-    current_time = datetime.datetime.now()
     for i in notes:
-        if i.s_time < current_time < i.e_time:
-            status = 'U'
-        elif current_time > i.e_time:
-            status = 'O'
-        elif current_time < i.s_time:
-            status = 'P'
-        Note.objects.filter(id=i.id).update(status=status)
+        now_status = get_note_status(i.s_time, i.e_time)
+        Note.objects.filter(id=i.id).update(status=now_status)
+
+
+# 判断记事状态
+def get_note_status(s_time, e_time):
+    current_time = datetime.datetime.now()
+    # 如果开始与结束时间是str类型,则需进行类型转换后才可与当前时间进行比较
+    if type(s_time) == str:
+        # 转换结束时间的格式,方便进行比较
+        e_time = e_time.replace('T', ' ')
+        e_time += ':00'
+        s_time = s_time.replace('T', ' ')
+        s_time += ':00'
+        e_time = datetime.datetime.strptime(e_time, '%Y-%m-%d %H:%M:%S')
+        s_time = datetime.datetime.strptime(s_time, '%Y-%m-%d %H:%M:%S')
+    # 进行中
+    if s_time < current_time < e_time:
+        return 'U'
+    # 超时
+    elif current_time > e_time:
+        return 'O'
+    # 未开始
+    elif current_time < s_time:
+        return 'P'
 
 
 # 判断前端输入格式
-def judge_input(data):
+def judge_input(origin, data):
+    global name, text, e_time, s_time
     for i in data.keys():
         if data[i] == '':
             return 0
-    name, text, s_time, e_time = data.values()
+    if origin == 'add':
+        name, text, s_time, e_time = data.values()
+    elif origin == 'edit':
+        id, name, text, s_time, e_time = data.values()
     if len(name) > 10 or len(text) > 20:
         return -3
     # 时间不合法

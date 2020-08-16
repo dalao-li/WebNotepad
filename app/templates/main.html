@@ -51,7 +51,7 @@
     <i class="fa fa-plus-square" style="font-size:20px"></i>
 </button>
 
-<button type="button" class="btn btn-danger btn-lg" onclick="location.href='/app/recover/'">回收站
+<button type="button" class="btn btn-danger btn-lg" onclick="location.href='/app/recover_page/'">回收站
     <i class="fa fa-trash" style="font-size:20px"></i>
 </button>
 
@@ -240,13 +240,10 @@
 
 <script>
 
-    $('#a2').click(function () {
-        $('#aaa').toggle(1)
-    })
     $('#noteList').bootstrapTable({
         //点击行事件
         onDblClickRow: (row) => {
-            if (row[5] === '进行中' || row[5] ==='未开始') {
+            if (row[5] === '进行中' || row[5] === '未开始' || row[5] === '已超时') {
                 $('#editModal').modal('show')
                 $('#id').val(row[0])
                 $('#names').val(row[1])
