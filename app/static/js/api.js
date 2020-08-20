@@ -27,7 +27,7 @@ function addNote(data) {
     sendAjax(data, '/app/add/', (value) => {
         if (value === 1) {
             swal({
-                title: "添加成功", text: "", type: "success", timer: 2000
+                title: "添加成功", text: "", type: "success", timer: 1500
             }, () => {
                 location.href = '/app/'
             })
@@ -48,7 +48,7 @@ function delNote(id) {
     var data = {'id': id,}
     sendAjax(data, '/app/del/', (value) => {
         if (value === 1) {
-            swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
+            swal({title: "删除成功", text: "", type: "success", timer: 1500}, () => {
                 location.reload()
             })
         }
@@ -75,7 +75,7 @@ function ruinNote(id) {
             var data = {'id': id,}
             sendAjax(data, '/app/ruin/', (value) => {
                 if (value === 1) {
-                    swal({title: "删除成功", text: "", type: "success", timer: 2000}, () => {
+                    swal({title: "删除成功", text: "", type: "success", timer: 1500}, () => {
                         location.reload()
                     })
                 }
@@ -93,7 +93,7 @@ function finishNote(id) {
     sendAjax(data, '/app/finish/', (value) => {
         if (value === 1) {
             swal({
-                title: "记事已完成", text: "", type: "success", timer: 2000
+                title: "记事已完成", text: "", type: "success", timer: 1500
             }, () => {
                 location.reload()
             })
@@ -114,7 +114,7 @@ function editNote(data) {
     sendAjax(data, '/app/edit/', (value) => {
         if (value === 1) {
             swal({
-                title: "修改成功", text: "", type: "success", timer: 2000
+                title: "修改成功", text: "", type: "success", timer: 1500
             }, function () {
                 location.reload()
             })
@@ -135,7 +135,7 @@ function recoverNote(id) {
     sendAjax(data, '/app/recover/', (value) => {
         if (value === 1) {
             swal({
-                title: "记事已恢复", text: "", type: "success", timer: 2000
+                title: "记事已恢复", text: "", type: "success", timer: 1500
             }, () => {
                 location.reload()
             })

@@ -16,6 +16,7 @@ def main_page(request):
     return render(request, 'main.html', {'note': notes})
 
 
+# 回收站页面
 def recover_page(request):
     notes = [i for i in Note.objects.filter(status='D')]
     return render(request, 'recover.html', {'note': notes})
@@ -26,7 +27,9 @@ def add_note(request):
     res = judge_input('add', data)
     if res == 1:
         name, text, s_time, e_time = data.values()
-        Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status='U')
+        # 获取该记事状态
+        now_status = get_note_status(s_time, e_time)
+        Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -71,6 +74,7 @@ def recover_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
     note = Note.objects.filter(id=n_id)[0]
+    # 根据进行的时间判断记事的状态
     now_status = get_note_status(note.s_time, note.e_time)
     res = change_status(n_id, now_status)
     return HttpResponse(json.dumps({'result': res}))
@@ -86,7 +90,7 @@ def change_status(n_id, status):
 
 # 批量更新记事状态
 def update_note_status(notes):
-    # 获取所有未删除记事
+    # 获取所有记事
     for i in notes:
         now_status = get_note_status(i.s_time, i.e_time)
         Note.objects.filter(id=i.id).update(status=now_status)
@@ -95,15 +99,10 @@ def update_note_status(notes):
 # 判断记事状态
 def get_note_status(s_time, e_time):
     current_time = datetime.datetime.now()
-    # 如果开始与结束时间是str类型,则需进行类型转换后才可与当前时间进行比较
+    # 如果开始与结束时间是str类型,则需进行类型转换
     if type(s_time) == str:
-        # 转换结束时间的格式,方便进行比较
-        e_time = e_time.replace('T', ' ')
-        e_time += ':00'
-        s_time = s_time.replace('T', ' ')
-        s_time += ':00'
-        e_time = datetime.datetime.strptime(e_time, '%Y-%m-%d %H:%M:%S')
-        s_time = datetime.datetime.strptime(s_time, '%Y-%m-%d %H:%M:%S')
+        e_time = change_time_format(e_time)
+        s_time = change_time_format(s_time)
     # 进行中
     if s_time < current_time < e_time:
         return 'U'
@@ -131,9 +130,15 @@ def judge_input(origin, data):
     if e_time < s_time:
         return -1
     # 转换结束时间的格式,方便进行比较
-    e_time = e_time.replace('T', ' ')
-    e_time += ':00'
+    e_time = change_time_format(e_time)
     # 结束时间小于当前时间
-    if datetime.datetime.strptime(e_time, '%Y-%m-%d %H:%M:%S') < datetime.datetime.now():
+    if e_time < datetime.datetime.now():
         return -2
     return 1
+
+
+# 将str类型的时间格式转换为datetime类型
+def change_time_format(time):
+    time = time.replace('T', ' ')
+    time += ':00'
+    return datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
