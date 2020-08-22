@@ -2,7 +2,7 @@ import datetime as datetime
 import json
 
 from django.shortcuts import render, HttpResponse
-from app.models import Note
+from app.models import Note, Log
 
 
 # Create your views here.
@@ -12,7 +12,9 @@ def main_page(request):
     # 获取所有未被删除的文章
     notes = [i for i in Note.objects.exclude(status='D')]
     # 更新记事状态
-    update_note_status(notes)
+    for i in notes:
+        now_status = get_note_status(i.s_time, i.e_time)
+        Note.objects.filter(id=i.id).update(status=now_status)
     return render(request, 'main.html', {'note': notes})
 
 
@@ -22,14 +24,24 @@ def recover_page(request):
     return render(request, 'recover.html', {'note': notes})
 
 
+def log_page(request):
+    logs = [i for i in Log.objects.all()]
+    return render(request, 'log.html', {'log': logs})
+
+
 def add_note(request):
     data = json.loads(request.body)
     res = judge_input('add', data)
+    # 输入合法
     if res == 1:
         name, text, s_time, e_time = data.values()
         # 获取该记事状态
         now_status = get_note_status(s_time, e_time)
         Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)
+
+        note = Note.objects.filter(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)[0]
+        n_id = note.id
+        addLog(n_id, 'A')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -42,6 +54,7 @@ def edit_note(request):
         # 获取该记事状态
         now_status = get_note_status(s_time, e_time)
         Note.objects.filter(id=n_id).update(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)
+        addLog(n_id, 'E')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -59,6 +72,7 @@ def finish_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
     res = change_status(n_id, 'F')
+    addLog(n_id, 'F')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -66,6 +80,7 @@ def del_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
     res = change_status(n_id, 'D')
+    addLog(n_id, 'D')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -77,6 +92,7 @@ def recover_note(request):
     # 根据进行的时间判断记事的状态
     now_status = get_note_status(note.s_time, note.e_time)
     res = change_status(n_id, now_status)
+    addLog(n_id, 'R')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -88,21 +104,13 @@ def change_status(n_id, status):
     return -1
 
 
-# 批量更新记事状态
-def update_note_status(notes):
-    # 获取所有记事
-    for i in notes:
-        now_status = get_note_status(i.s_time, i.e_time)
-        Note.objects.filter(id=i.id).update(status=now_status)
-
-
-# 判断记事状态
+# 根据时间判断记事状态
 def get_note_status(s_time, e_time):
     current_time = datetime.datetime.now()
     # 如果开始与结束时间是str类型,则需进行类型转换
     if type(s_time) == str:
-        e_time = change_time_format(e_time)
         s_time = change_time_format(s_time)
+        e_time = change_time_format(e_time)
     # 进行中
     if s_time < current_time < e_time:
         return 'U'
@@ -142,3 +150,9 @@ def change_time_format(time):
     time = time.replace('T', ' ')
     time += ':00'
     return datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+
+
+# 增加操作日志
+def addLog(n_id, operate):
+    current_time = datetime.datetime.now()
+    Log.objects.create(n_id=n_id, operation=operate, r_time=current_time)

@@ -45,10 +45,12 @@ function addNote(data) {
 
 
 function delNote(id) {
-    var data = {'id': id,}
+    const data = {'id': id}
     sendAjax(data, '/app/del/', (value) => {
         if (value === 1) {
-            swal({title: "删除成功", text: "", type: "success", timer: 1500}, () => {
+            swal({
+                title: "删除成功", text: "", type: "success", timer: 1500
+            }, () => {
                 location.reload()
             })
         }
@@ -58,7 +60,7 @@ function delNote(id) {
     })
 }
 
-
+//彻底删除
 function ruinNote(id) {
     swal({
             title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
@@ -72,10 +74,12 @@ function ruinNote(id) {
                 swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
                 return
             }
-            var data = {'id': id,}
+            const data = {'id': id,}
             sendAjax(data, '/app/ruin/', (value) => {
                 if (value === 1) {
-                    swal({title: "删除成功", text: "", type: "success", timer: 1500}, () => {
+                    swal({
+                        title: "删除成功", text: "", type: "success", timer: 1500
+                    }, () => {
                         location.reload()
                     })
                 }

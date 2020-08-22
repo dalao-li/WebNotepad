@@ -7,6 +7,8 @@ urlpatterns = [
 
     path('recover_page/', views.recover_page),
 
+    path('log_page/', views.log_page),
+
     path('add/', views.add_note),
 
     path('ruin/', views.ruin_note),
