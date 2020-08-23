@@ -7,7 +7,7 @@ MAINTAINER Dalao-Li <dalaocasper@foxmail.com>
 LABEL version="v1" description="Docker deploy Django" by="Dalao-Li"
 
 #程序的运行目录
-WORKDIR /django
+WORKDIR /usr/src/nptepad
 
 #设置时区为上海
 ENV TZ=Asia/Shanghai
@@ -18,7 +18,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY requirements.txt ./
 
 #安装库
-RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+RUN pip install -r requirements.txt -i https://pypi.douban.com/simple/
 
 # 复制项目文件
 COPY . .

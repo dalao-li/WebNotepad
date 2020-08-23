@@ -64,7 +64,7 @@
             <td>{{ i.e_time }}</td>
             <td class="danger">已删除</td>
             <td>
-                <button type="button" class="btn btn-success" id="recoverBtn" onclick=recoverNote("{{ i.id }}")>恢复
+                <button type="button" class="btn btn-success" onclick=recoverNote("{{ i.id }}")>恢复
                     <i class="fa fa-check-square-o" style="font-size:20px"></i>
                 </button>
                 <button type="button" class="btn btn-danger" onclick=ruinNote("{{ i.id }}")>彻底删除
@@ -75,74 +75,6 @@
     {% endfor %}
     </tbody>
 </table>
-
-
-<!--修改笔记弹出框-->
-<div id="editModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">
-                    <i class="fa fa-wrench"> 修改记事</i>
-                </h4>
-            </div>
-            <div class="modal-body">
-                <form id="editNoteForm" action="" onsubmit="return false">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">记事序号</span>
-                        </div>
-                        <label for="id"></label>
-                        <input type="text" class="form-control" id="id" name="id" required readonly>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">标题</span>
-                        </div>
-                        <label for="names"></label>
-                        <input type="text" class="form-control" id="names" name="names" required>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">内容</span>
-                        </div>
-                        <label for="texts"></label>
-                        <input type="text" class="form-control" id="texts" name="texts" required>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">开始时间</span>
-                        </div>
-                        <label for="startTimes"></label>
-                        <input type="datetime-local" class="form-control" id="startTimes" name="startTimes"
-                               placeholder="请选择开始时间" required>
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">结束时间</span>
-                        </div>
-                        <label for="endTimes"></label>
-                        <input type="datetime-local" class="form-control" id="endTimes" name="endTimes"
-                               placeholder="请选择结束时间" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="editBtn">提交
-                            <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
-                        </button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
-                            <i class="fa fa-times" style="font-size:20px"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 

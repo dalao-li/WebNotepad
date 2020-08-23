@@ -34,12 +34,13 @@ def add_note(request):
     res = judge_input('add', data)
     # 输入合法
     if res == 1:
-        name, text, s_time, e_time = data.values()
+        name, text, s_time, e_time, grade = data.values()
         # 获取该记事状态
         now_status = get_note_status(s_time, e_time)
-        Note.objects.create(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)
-
-        note = Note.objects.filter(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)[0]
+        Note.objects.create(
+            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)
+        note = Note.objects.filter(
+            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)[0]
         n_id = note.id
         addLog(n_id, 'A')
     return HttpResponse(json.dumps({'result': res}))
@@ -50,10 +51,11 @@ def edit_note(request):
     res = judge_input('edit', data)
     # 输入合法
     if res == 1:
-        n_id, name, text, s_time, e_time = data.values()
+        n_id, name, text, s_time, e_time, grade = data.values()
         # 获取该记事状态
         now_status = get_note_status(s_time, e_time)
-        Note.objects.filter(id=n_id).update(name=name, text=text, s_time=s_time, e_time=e_time, status=now_status)
+        Note.objects.filter(id=n_id).update(
+            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade,status=now_status)
         addLog(n_id, 'E')
     return HttpResponse(json.dumps({'result': res}))
 
@@ -104,6 +106,14 @@ def change_status(n_id, status):
     return -1
 
 
+# 改变记事优先级
+def change_grade(n_id, grade):
+    Note.objects.filter(id=n_id).update(grade=grade)
+    if Note.objects.filter(id=n_id, grade=grade).exists():
+        return 1
+    return -1
+
+
 # 根据时间判断记事状态
 def get_note_status(s_time, e_time):
     current_time = datetime.datetime.now()
@@ -129,9 +139,9 @@ def judge_input(origin, data):
         if data[i] == '':
             return 0
     if origin == 'add':
-        name, text, s_time, e_time = data.values()
+        name, text, s_time, e_time,grade = data.values()
     elif origin == 'edit':
-        id, name, text, s_time, e_time = data.values()
+        id, name, text, s_time, e_time,grade = data.values()
     if len(name) > 10 or len(text) > 20:
         return -3
     # 时间不合法

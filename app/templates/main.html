@@ -19,6 +19,21 @@
     <script src="{% static 'js/bootstrap-table-zh-CN.min.js' %}"></script>
     <script src="{% static 'js/api.js' %}"></script>
     <style>
+        .important {
+            color: red;
+            font-weight: bold;
+        }
+
+        .common {
+            color: green;
+            font-weight: bold;
+        }
+
+        .necessary {
+            color: blue;
+            font-weight: bold;
+        }
+
         .underway {
             color: red;
             font-weight: bold;
@@ -56,11 +71,16 @@
 </button>
 
 
+<button type="button" class="btn btn-warning btn-lg" onclick="location.href='/app/log_page/'">记录
+    <i class="fa fa-archive" style="font-size:20px"></i>
+</button>
+
 <table id="noteList" class="table table-hover">
     <thead>
     <tr>
 
         <th>序号</th>
+        <th>优先级</th>
         <th>标题</th>
         <th>正文</th>
         <th>开始时间</th>
@@ -76,6 +96,13 @@
     {% for i in note %}
         <tr>
             <td>{{ i.id }}</td>
+            {% if i.grade == 'I' %}
+                <td class="important">重要的</td>
+            {% elif i.grade == 'C' %}
+                <td class="common">普通的</td>
+            {% elif i.grade == 'N' %}
+                <td class="necessary">必须的</td>
+            {% endif %}
             <td>{{ i.name }}</td>
             <td>{{ i.text }}</td>
             <td>{{ i.s_time }}</td>
@@ -156,6 +183,18 @@
                                placeholder="请选择结束时间" required="required">
                     </div>
 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">优先级</span>
+                        </div>
+                        <select class="form-control" name="grade">
+                            <option value="I">重要的</option>
+                            <option value="N">必须的</option>
+                            <!--默认值-->
+                            <option value="C" selected>普通的</option>
+                        </select>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" id="addBtn">提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
@@ -224,6 +263,19 @@
                         <input type="datetime-local" class="form-control" id="endTimes" name="endTimes"
                                placeholder="请选择结束时间" required>
                     </div>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">优先级</span>
+                        </div>
+                        <select class="form-control" name="grade">
+                            <option value="I">重要的</option>
+                            <option value="N">必须的</option>
+                            <option value="C">普通的</option>
+                        </select>
+                    </div>
+
+
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" id="editBtn">提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
@@ -243,11 +295,11 @@
     $('#noteList').bootstrapTable({
         //点击行事件
         onDblClickRow: (row) => {
-            if (row[5] === '进行中' || row[5] === '未开始' || row[5] === '已超时') {
+            if (row[6] !== '已完成') {
                 $('#editModal').modal('show')
                 $('#id').val(row[0])
-                $('#names').val(row[1])
-                $('#texts').val(row[2])
+                $('#names').val(row[2])
+                $('#texts').val(row[3])
             }
         },
         //是否显示分页条

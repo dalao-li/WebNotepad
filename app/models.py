@@ -15,10 +15,20 @@ class Note(models.Model):
         ('P', 'Plan')
     )
 
+    """
+    记事的重要性
+    """
+    rank = (
+        ('I','Important'),
+        ('C','Common'),
+        ('N','Necessary')
+    )
+
     name = models.CharField(verbose_name='标题', max_length=5)
     text = models.TextField(verbose_name='内容', max_length=20)
     s_time = models.DateTimeField(verbose_name='开始时间')
     e_time = models.DateTimeField(verbose_name='结束时间')
+    grade = models.CharField(verbose_name='等级',default='C',choices=rank,max_length=1)
     status = models.CharField(verbose_name='状态', default='U', choices=choices, max_length=1)
 
 
