@@ -19,15 +19,10 @@ function sendAjax(param, url, callback) {
 
 
 function addNote(data) {
-    for (const k in data) {
-        if (data.hasOwnProperty(k) && data[k] === "") {
-            return
-        }
-    }
     sendAjax(data, '/app/add/', (value) => {
         if (value === 1) {
             swal({
-                title: "添加成功", text: "", type: "success", timer: 1500
+                title: "添加成功", text: "", type: "success", timer: 1000
             }, () => {
                 location.href = '/app/'
             })
@@ -49,7 +44,7 @@ function delNote(id) {
     sendAjax(data, '/app/del/', (value) => {
         if (value === 1) {
             swal({
-                title: "删除成功", text: "", type: "success", timer: 1500
+                title: "删除成功", text: "", type: "success", timer: 1000
             }, () => {
                 location.reload()
             })
@@ -78,7 +73,7 @@ function ruinNote(id) {
             sendAjax(data, '/app/ruin/', (value) => {
                 if (value === 1) {
                     swal({
-                        title: "删除成功", text: "", type: "success", timer: 1500
+                        title: "删除成功", text: "", type: "success", timer: 1000
                     }, () => {
                         location.reload()
                     })
@@ -97,7 +92,7 @@ function finishNote(id) {
     sendAjax(data, '/app/finish/', (value) => {
         if (value === 1) {
             swal({
-                title: "记事已完成", text: "", type: "success", timer: 1500
+                title: "记事已完成", text: "", type: "success", timer: 1000
             }, () => {
                 location.reload()
             })
@@ -110,15 +105,10 @@ function finishNote(id) {
 
 
 function editNote(data) {
-    for (const k in data) {
-        if (data.hasOwnProperty(k) && data[k] === "") {
-            return
-        }
-    }
     sendAjax(data, '/app/edit/', (value) => {
         if (value === 1) {
             swal({
-                title: "修改成功", text: "", type: "success", timer: 1500
+                title: "修改成功", text: "", type: "success", timer: 1000
             }, function () {
                 location.reload()
             })
@@ -139,7 +129,7 @@ function recoverNote(id) {
     sendAjax(data, '/app/recover/', (value) => {
         if (value === 1) {
             swal({
-                title: "记事已恢复", text: "", type: "success", timer: 1500
+                title: "记事已恢复", text: "", type: "success", timer: 1000
             }, () => {
                 location.reload()
             })

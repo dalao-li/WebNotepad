@@ -15,9 +15,8 @@ def index_page(request):
     # 更新记事状态
     for i in notes:
         if i.status != 'F':
-            now_status = get_status(i.s_time, i.e_time)
+            now_status = get_status(i.start_time, i.end_time)
             Note.objects.filter(id=i.id).update(status=now_status)
-
     recover_notes = [i for i in Note.objects.filter(status='D')]
     logs = [i for i in Log.objects.all()]
     return render(request, 'index.html', {'note': notes, 'recover_notes': recover_notes, 'log': logs})
@@ -31,12 +30,9 @@ def add_note(request):
         name, text, s_time, e_time, grade = data.values()
         # 获取该记事状态
         now_status = get_status(s_time, e_time)
-        Note.objects.create(
-            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)
-        note = Note.objects.filter(
-            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)[0]
-        n_id = note.id
-        addLog(n_id, 'A')
+        note = Note.objects.create(
+            title=name, text=text, start_time=s_time, end_time=e_time, grade=grade, status=now_status)
+        addLog(note.id, 'A')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -49,10 +45,9 @@ def edit_note(request):
         # 获取该记事状态
         now_status = get_status(s_time, e_time)
         Note.objects.filter(id=n_id).update(
-            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)
+            title=name, text=text, start_time=s_time, end_time=e_time, grade=grade, status=now_status)
         addLog(n_id, 'E')
     return HttpResponse(json.dumps({'result': res}))
-
 
 # 彻底删除
 def ruin_note(request):
@@ -86,7 +81,7 @@ def recover_note(request):
     n_id = list(data.values())[0]
     note = Note.objects.filter(id=n_id)[0]
     # 根据进行的时间判断记事的状态
-    now_status = get_status(note.s_time, note.e_time)
+    now_status = get_status(note.start_time, note.end_time)
     res = change_status(n_id, now_status)
     addLog(n_id, 'R')
     return HttpResponse(json.dumps({'result': res}))
@@ -127,7 +122,7 @@ def judge_input(origin, data):
     if origin == 'add':
         name, text, s_time, e_time, grade = data.values()
     elif origin == 'edit':
-        id, name, text, s_time, e_time, grade = data.values()
+        id, name, text, start_time, e_time, grade = data.values()
     if len(name) > 10 or len(text) > 20:
         return -3
     # 时间不合法
@@ -151,4 +146,4 @@ def change_time_format(time):
 # 增加操作日志
 def addLog(n_id, operate):
     current_time = datetime.datetime.now()
-    Log.objects.create(n_id=n_id, operation=operate, r_time=current_time)
+    Log.objects.create(n_id=n_id, operation=operate, record_time=current_time)

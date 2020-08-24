@@ -24,10 +24,10 @@ class Note(models.Model):
         ('N','Necessary')
     )
 
-    name = models.CharField(verbose_name='标题', max_length=5)
+    title = models.CharField(verbose_name='标题', max_length=5)
     text = models.TextField(verbose_name='内容', max_length=20)
-    s_time = models.DateTimeField(verbose_name='开始时间')
-    e_time = models.DateTimeField(verbose_name='结束时间')
+    start_time = models.DateTimeField(verbose_name='开始时间')
+    end_time = models.DateTimeField(verbose_name='结束时间')
     grade = models.CharField(verbose_name='等级',default='C',choices=rank,max_length=1)
     status = models.CharField(verbose_name='状态', default='U', choices=choices, max_length=1)
 
@@ -41,6 +41,6 @@ class Log(models.Model):
         ('R', 'Recover')
     )
 
-    n_id = models.CharField(verbose_name='记事id', max_length=10000)
+    note_id = models.CharField(verbose_name='记事id', max_length=10000)
     operation = models.CharField(verbose_name='操作', choices=choices, max_length=1)
-    r_time = models.DateTimeField(verbose_name='记录时间')
+    record_time = models.DateTimeField(verbose_name='记录时间')
