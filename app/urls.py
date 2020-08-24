@@ -3,11 +3,7 @@ from app import views
 
 urlpatterns = [
     # 将函数绑定至对应路由
-    path('', views.main_page),
-
-    path('recover_page/', views.recover_page),
-
-    path('log_page/', views.log_page),
+    path('', views.index_page),
 
     path('add/', views.add_note),
 

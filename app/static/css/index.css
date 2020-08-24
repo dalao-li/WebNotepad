@@ -1,0 +1,68 @@
+.important {
+    color: red;
+    font-weight: bold;
+}
+
+.common {
+    color: green;
+    font-weight: bold;
+}
+
+.necessary {
+    color: blue;
+    font-weight: bold;
+}
+
+.underway {
+    color: red;
+    font-weight: bold;
+}
+
+.finish {
+    color: green;
+    font-weight: bold;
+}
+
+.overtime {
+    color: orange;
+    font-weight: bold;
+}
+
+.plan {
+    color: blue;
+    font-weight: bold;
+}
+
+.add {
+    color: red;
+    font-weight: bold;
+}
+
+.edit {
+    color: #9d00ff;
+    font-weight: bold;
+}
+
+.delete {
+    color: #ffbf00;
+    font-weight: bold;
+}
+
+.recover {
+    color: #24c418;
+    font-weight: bold;
+}
+
+.danger {
+    color: red;
+    font-weight: bold;
+}
+
+.nameTitle {
+    text-align: center;
+    color: transparent;
+    background-color: black;
+    text-shadow: rgba(255, 255, 255, 0.5) 0 5px 6px, rgba(255, 255, 255, 0.2) 1px 3px 3px;
+    -webkit-background-clip: text;
+
+}

@@ -8,25 +8,19 @@ from app.models import Note, Log
 # Create your views here.
 
 # 主页面
-def main_page(request):
+
+def index_page(request):
     # 获取所有未被删除的文章
     notes = [i for i in Note.objects.exclude(status='D')]
     # 更新记事状态
     for i in notes:
-        now_status = get_note_status(i.s_time, i.e_time)
-        Note.objects.filter(id=i.id).update(status=now_status)
-    return render(request, 'main.html', {'note': notes})
+        if i.status != 'F':
+            now_status = get_note_status(i.s_time, i.e_time)
+            Note.objects.filter(id=i.id).update(status=now_status)
 
-
-# 回收站页面
-def recover_page(request):
-    notes = [i for i in Note.objects.filter(status='D')]
-    return render(request, 'recover.html', {'note': notes})
-
-
-def log_page(request):
+    notes2 = [i for i in Note.objects.filter(status='D')]
     logs = [i for i in Log.objects.all()]
-    return render(request, 'log.html', {'log': logs})
+    return render(request, 'index.html', {'note': notes, 'recover_notes': notes2, 'log': logs})
 
 
 def add_note(request):
@@ -55,7 +49,7 @@ def edit_note(request):
         # 获取该记事状态
         now_status = get_note_status(s_time, e_time)
         Note.objects.filter(id=n_id).update(
-            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade,status=now_status)
+            name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)
         addLog(n_id, 'E')
     return HttpResponse(json.dumps({'result': res}))
 
@@ -139,9 +133,9 @@ def judge_input(origin, data):
         if data[i] == '':
             return 0
     if origin == 'add':
-        name, text, s_time, e_time,grade = data.values()
+        name, text, s_time, e_time, grade = data.values()
     elif origin == 'edit':
-        id, name, text, s_time, e_time,grade = data.values()
+        id, name, text, s_time, e_time, grade = data.values()
     if len(name) > 10 or len(text) > 20:
         return -3
     # 时间不合法
