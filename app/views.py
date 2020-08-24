@@ -15,12 +15,12 @@ def index_page(request):
     # 更新记事状态
     for i in notes:
         if i.status != 'F':
-            now_status = get_note_status(i.s_time, i.e_time)
+            now_status = get_status(i.s_time, i.e_time)
             Note.objects.filter(id=i.id).update(status=now_status)
 
-    notes2 = [i for i in Note.objects.filter(status='D')]
+    recover_notes = [i for i in Note.objects.filter(status='D')]
     logs = [i for i in Log.objects.all()]
-    return render(request, 'index.html', {'note': notes, 'recover_notes': notes2, 'log': logs})
+    return render(request, 'index.html', {'note': notes, 'recover_notes': recover_notes, 'log': logs})
 
 
 def add_note(request):
@@ -30,7 +30,7 @@ def add_note(request):
     if res == 1:
         name, text, s_time, e_time, grade = data.values()
         # 获取该记事状态
-        now_status = get_note_status(s_time, e_time)
+        now_status = get_status(s_time, e_time)
         Note.objects.create(
             name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)
         note = Note.objects.filter(
@@ -47,7 +47,7 @@ def edit_note(request):
     if res == 1:
         n_id, name, text, s_time, e_time, grade = data.values()
         # 获取该记事状态
-        now_status = get_note_status(s_time, e_time)
+        now_status = get_status(s_time, e_time)
         Note.objects.filter(id=n_id).update(
             name=name, text=text, s_time=s_time, e_time=e_time, grade=grade, status=now_status)
         addLog(n_id, 'E')
@@ -86,7 +86,7 @@ def recover_note(request):
     n_id = list(data.values())[0]
     note = Note.objects.filter(id=n_id)[0]
     # 根据进行的时间判断记事的状态
-    now_status = get_note_status(note.s_time, note.e_time)
+    now_status = get_status(note.s_time, note.e_time)
     res = change_status(n_id, now_status)
     addLog(n_id, 'R')
     return HttpResponse(json.dumps({'result': res}))
@@ -100,16 +100,8 @@ def change_status(n_id, status):
     return -1
 
 
-# 改变记事优先级
-def change_grade(n_id, grade):
-    Note.objects.filter(id=n_id).update(grade=grade)
-    if Note.objects.filter(id=n_id, grade=grade).exists():
-        return 1
-    return -1
-
-
 # 根据时间判断记事状态
-def get_note_status(s_time, e_time):
+def get_status(s_time, e_time):
     current_time = datetime.datetime.now()
     # 如果开始与结束时间是str类型,则需进行类型转换
     if type(s_time) == str:
