@@ -146,4 +146,4 @@ def change_time_format(time):
 # 增加操作日志
 def addLog(n_id, operate):
     current_time = datetime.datetime.now()
-    Log.objects.create(n_id=n_id, operation=operate, record_time=current_time)
+    Log.objects.create(note_id=n_id, operation=operate, record_time=current_time)
