@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>记事本</title>
-
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
@@ -18,6 +17,13 @@
     <script src="{% static 'js/bootstrap/bootstrap-table.min.js' %}"></script>
     <script src="{% static 'js/bootstrap/bootstrap-table-zh-CN.min.js' %}"></script>
     <script src="{% static 'js/api.js' %}"></script>
+
+    <style>
+        .navTitle {
+            font-weight: bold;
+            font-size: large
+        }
+    </style>
 </head>
 <body >
 
@@ -26,19 +32,19 @@
     <ul class="nav nav-tabs">
         <li class="nav-item ">
             <a class="nav-link active" href="#mainTab" data-toggle="tab">
-                <span style="font-weight: bold;font-size: large">记事本</span>
+                <span class="navTitle">记事本</span>
                 <i class="fa fa-book"></i>
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#recoverTab" data-toggle="tab">
-                <span style="font-weight: bold;font-size: large">回收站</span>
+                <span class="navTitle">回收站</span>
                 <i class="fa fa-trash"></i>
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#logTab" data-toggle="tab">
-                <span style="font-weight: bold;font-size: large">操作记录</span>
+                <span class="navTitle">操作记录</span>
                 <i class="fa fa-archive"></i>
             </a>
         </li>

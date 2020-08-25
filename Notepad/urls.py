@@ -7,7 +7,7 @@ from app import views
 urlpatterns = [
     path('app/', include('app.urls')),
     path('', views.index_page),
-    # 静态文件
+    # 部署时访问静态文件
     url(r'^static/(?P<path>.*)$', static.serve,
         {'document_root': settings.STATIC_ROOT}, name='static'),
 ]

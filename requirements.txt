@@ -1,5 +1,6 @@
 asgiref==3.2.10
 cffi==1.14.1
+DateTime==4.3
 Django==3.1
 gevent==20.6.2
 greenlet==0.4.16
