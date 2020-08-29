@@ -25,7 +25,7 @@
         }
     </style>
 </head>
-<body >
+<body>
 
 <h1 class="nameTitle">网页记事本</h1>
 <nav class="navbar nav-tabs" role="navigation">
@@ -59,6 +59,7 @@
         <table id="mainList" class="table table-hover">
             <thead>
             <tr>
+                <th>选择</th>
                 <th>序号</th>
                 <th>优先级</th>
                 <th>标题</th>
@@ -72,6 +73,13 @@
             <tbody>
             {% for i in note %}
                 <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="checkbox-{{ i.id }}"/>
+                            </label>
+                        </div>
+                    </td>
                     <td>{{ i.id }}</td>
                     {% if i.grade == 'I' %}
                         <td class="important">重要的</td>
@@ -112,8 +120,9 @@
             {% endfor %}
             </tbody>
         </table>
-        <button type="button" class="btn btn-primary btn-lg" onclick="$('#addModal').modal('show')">添加</button>
-        <button type="button" class="btn btn-warning btn-lg" onclick="">批量操作</button>
+        <button type="button" class="btn btn-primary" onclick="$('#addModal').modal('show')">添加</button>
+        <button type="button" class="btn btn-warning" onclick="" id="checkAllBtn">全选/取消</button>
+        <button type="button" class="btn btn-danger" onclick=delCheckedNotes()>删除选中项</button>
     </div>
 
     <!--第二个页面,注意id要和选项卡定义的href一致-->
@@ -349,7 +358,7 @@
 <script>
 
     $('#mainList').bootstrapTable({
-        //点击行事件
+        //双击行事件
         onDblClickRow: (row) => {
             if (row[6] !== '已完成') {
                 $('#editModal').modal('show')
@@ -418,6 +427,44 @@
         }
         editNote(data)
     })
+
+    $('#checkAllBtn').click(function () {
+        $("input[type='checkbox']").each(function () {
+            if ($(this).attr("checked")) {
+                $(this).removeAttr("checked");
+            } else {
+                $(this).attr("checked", "true");
+            }
+        })
+    })
+
+    function delCheckedNotes() {
+        var idList = []
+        $("input[type='checkbox']:checkbox:checked").each(function () {
+            //由于复选框一般选中的是多个,所以可以循环输出
+            var id = this.id
+            //根据控件id获取记事id
+            idList.push(id.split("-")[1])
+        })
+        if (idList.length === 0) {
+            swal("请选择需要删除的记事", "请重试", "warning")
+            return
+        }
+        data = {'ids': idList}
+        sendAjax(data, '/app/del_checked/', (value) => {
+            if (value === 1) {
+                swal({
+                    title: "删除成功", text: "", type: "success", timer: 1000
+                }, () => {
+                    location.reload()
+                })
+            }
+            if (value === -1) {
+                swal("删除失败", "请重试", "error")
+            }
+        })
+    }
+
 </script>
 </body>
 </html>

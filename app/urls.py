@@ -15,6 +15,8 @@ urlpatterns = [
 
     path('finish/', views.finish_note),
 
-    path('recover/', views.recover_note)
+    path('recover/', views.recover_note),
+
+    path('del_checked/',views.del_checked_notes)
 
 ]

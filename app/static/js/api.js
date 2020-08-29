@@ -40,7 +40,7 @@ function addNote(data) {
 
 
 function delNote(id) {
-    const data = {'id': id}
+    const data = { 'id': id }
     sendAjax(data, '/app/del/', (value) => {
         if (value === 1) {
             swal({
@@ -58,37 +58,38 @@ function delNote(id) {
 //彻底删除
 function ruinNote(id) {
     swal({
-            title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "确认", cancelButtonText: "取消",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        }, function (isConfirm) {
-            if (!isConfirm) {
-                swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
-                return
-            }
-            const data = {'id': id,}
-            sendAjax(data, '/app/ruin/', (value) => {
-                if (value === 1) {
-                    swal({
-                        title: "删除成功", text: "", type: "success", timer: 1000
-                    }, () => {
-                        location.reload()
-                    })
-                }
-                if (value === -1) {
-                    swal("删除失败", "请重试", "error")
-                }
-            })
+        title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    }, function (isConfirm) {
+        if (!isConfirm) {
+            swal({ title: "已取消", text: "您取消了删除操作！", type: "warning" })
+            return
         }
+        const data = { 'id': id, }
+        sendAjax(data, '/app/ruin/', (value) => {
+            if (value === 1) {
+                swal({
+                    title: "删除成功", text: "", type: "success", timer: 1000
+                }, () => {
+                    location.reload()
+                })
+            }
+            if (value === -1) {
+                swal("删除失败", "请重试", "error")
+            }
+        })
+    }
     )
 }
 
 
 function finishNote(id) {
-    const data = {'id': id}
+    const data = { 'id': id }
     sendAjax(data, '/app/finish/', (value) => {
         if (value === 1) {
             swal({
@@ -125,7 +126,7 @@ function editNote(data) {
 }
 
 function recoverNote(id) {
-    const data = {'id': id}
+    const data = { 'id': id }
     sendAjax(data, '/app/recover/', (value) => {
         if (value === 1) {
             swal({
