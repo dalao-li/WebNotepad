@@ -162,7 +162,10 @@
                 </tr>
             {% endfor %}
             </tbody>
+
         </table>
+        <button type="button" class="btn btn-warning" onclick=recoverAllNotes()>全部恢复</button>
+        <button type="button" class="btn btn-danger" onclick=>全部删除</button>
     </div>
 
     <!--第三个页面,注意id要和选项卡定义的href一致-->
@@ -437,33 +440,6 @@
             }
         })
     })
-
-    function delCheckedNotes() {
-        var idList = []
-        $("input[type='checkbox']:checkbox:checked").each(function () {
-            //由于复选框一般选中的是多个,所以可以循环输出
-            var id = this.id
-            //根据控件id获取记事id
-            idList.push(id.split("-")[1])
-        })
-        if (idList.length === 0) {
-            swal("请选择需要删除的记事", "请重试", "warning")
-            return
-        }
-        data = {'ids': idList}
-        sendAjax(data, '/app/del_checked/', (value) => {
-            if (value === 1) {
-                swal({
-                    title: "删除成功", text: "", type: "success", timer: 1000
-                }, () => {
-                    location.reload()
-                })
-            }
-            if (value === -1) {
-                swal("删除失败", "请重试", "error")
-            }
-        })
-    }
 
 </script>
 </body>

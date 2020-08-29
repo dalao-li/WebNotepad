@@ -11,12 +11,14 @@ urlpatterns = [
 
     path('del/', views.del_note),
 
+    path('del/checked/', views.del_checked_notes),
+
     path('edit/', views.edit_note),
 
     path('finish/', views.finish_note),
 
     path('recover/', views.recover_note),
 
-    path('del_checked/',views.del_checked_notes)
+    path('recover/all', views.recover_all_notes)
 
 ]

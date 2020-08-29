@@ -40,8 +40,35 @@ function addNote(data) {
 
 
 function delNote(id) {
-    const data = { 'id': id }
+    const data = {'id': id}
     sendAjax(data, '/app/del/', (value) => {
+        if (value === 1) {
+            swal({
+                title: "删除成功", text: "", type: "success", timer: 1000
+            }, () => {
+                location.reload()
+            })
+        }
+        if (value === -1) {
+            swal("删除失败", "请重试", "error")
+        }
+    })
+}
+
+function delCheckedNotes() {
+    var idList = []
+    $("input[type='checkbox']:checkbox:checked").each(function () {
+        //由于复选框一般选中的是多个,所以可以循环输出
+        var id = this.id
+        //根据控件id获取记事id
+        idList.push(id.split("-")[1])
+    })
+    if (idList.length === 0) {
+        swal("请选择需要删除的记事", "请重试", "warning")
+        return
+    }
+    data = {'ids': idList}
+    sendAjax(data, '/app/del/checked/', (value) => {
         if (value === 1) {
             swal({
                 title: "删除成功", text: "", type: "success", timer: 1000
@@ -58,38 +85,38 @@ function delNote(id) {
 //彻底删除
 function ruinNote(id) {
     swal({
-        title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        closeOnConfirm: false,
-        closeOnCancel: false
-    }, function (isConfirm) {
-        if (!isConfirm) {
-            swal({ title: "已取消", text: "您取消了删除操作！", type: "warning" })
-            return
+            title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (!isConfirm) {
+                swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
+                return
+            }
+            const data = {'id': id,}
+            sendAjax(data, '/app/ruin/', (value) => {
+                if (value === 1) {
+                    swal({
+                        title: "删除成功", text: "", type: "success", timer: 1000
+                    }, () => {
+                        location.reload()
+                    })
+                }
+                if (value === -1) {
+                    swal("删除失败", "请重试", "error")
+                }
+            })
         }
-        const data = { 'id': id, }
-        sendAjax(data, '/app/ruin/', (value) => {
-            if (value === 1) {
-                swal({
-                    title: "删除成功", text: "", type: "success", timer: 1000
-                }, () => {
-                    location.reload()
-                })
-            }
-            if (value === -1) {
-                swal("删除失败", "请重试", "error")
-            }
-        })
-    }
     )
 }
 
 
 function finishNote(id) {
-    const data = { 'id': id }
+    const data = {'id': id}
     sendAjax(data, '/app/finish/', (value) => {
         if (value === 1) {
             swal({
@@ -126,11 +153,27 @@ function editNote(data) {
 }
 
 function recoverNote(id) {
-    const data = { 'id': id }
+    const data = {'id': id}
     sendAjax(data, '/app/recover/', (value) => {
         if (value === 1) {
             swal({
                 title: "记事已恢复", text: "", type: "success", timer: 1000
+            }, () => {
+                location.reload()
+            })
+        }
+        if (value === -1) {
+            swal("网络异常", "请重试", "error")
+        }
+    })
+}
+
+function recoverAllNotes() {
+    const data = {'id': 1}
+    sendAjax(data, '/app/recover/all', (value) => {
+        if (value === 1) {
+            swal({
+                title: "记事已全部恢复", text: "", type: "success", timer: 1000
             }, () => {
                 location.reload()
             })

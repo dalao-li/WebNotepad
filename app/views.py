@@ -49,6 +49,7 @@ def edit_note(request):
         addLog(n_id, 'E')
     return HttpResponse(json.dumps({'result': res}))
 
+
 # 彻底删除
 
 
@@ -80,13 +81,11 @@ def del_note(request):
 def del_checked_notes(request):
     data = json.loads(request.body)
     note_id_list = list(data.values())[0]
-    print(note_id_list)
     res = 1
     for i in note_id_list:
         res = change_status(i, 'D')
         addLog(i, 'D')
     return HttpResponse(json.dumps({'result': res}))
-
 
 
 # 恢复记事
@@ -98,6 +97,18 @@ def recover_note(request):
     now_status = get_status(note.start_time, note.end_time)
     res = change_status(n_id, now_status)
     addLog(n_id, 'R')
+    return HttpResponse(json.dumps({'result': res}))
+
+
+# 恢复记事
+def recover_all_notes(request):
+    note_list = [i for i in Note.objects.filter(status='D')]
+    res = 1
+    for i in note_list:
+        # 根据进行的时间判断记事的状态
+        now_status = get_status(i.start_time, i.end_time)
+        res = change_status(i.id, now_status)
+        addLog(i.id, 'R')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -162,5 +173,3 @@ def addLog(n_id, operate):
     current_time = datetime.datetime.now()
     Log.objects.create(note_id=n_id, operation=operate,
                        record_time=current_time)
-
-
