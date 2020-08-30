@@ -10,9 +10,7 @@ LABEL version="v1" description="Docker deploy Django" by="Dalao-Li"
 WORKDIR /usr/src/nptepad
 
 #设置时区为上海
-ENV TZ=Asia/Shanghai
-
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
 
 #导入依赖文件
 COPY requirements.txt ./

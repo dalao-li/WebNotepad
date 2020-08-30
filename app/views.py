@@ -51,22 +51,34 @@ def edit_note(request):
 
 
 # 彻底删除
-
-
 def ruin_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
     Note.objects.filter(id=n_id).delete()
+    res = 1
     if Note.objects.filter(id=n_id).exists():
-        return HttpResponse(json.dumps({'result': -1}))
-    return HttpResponse(json.dumps({'result': 1}))
+        res = -1
+    return HttpResponse(json.dumps({'result': res}))
+
+
+def ruin_checked_notes(request):
+    data = json.loads(request.body)
+    note_id_list = list(data.values())[0]
+    res = 1
+    for i in note_id_list:
+        Note.objects.filter(id=i).delete()
+        if Note.objects.filter(id=i).exists():
+            res = -1
+            break
+    return HttpResponse(json.dumps({'result': res}))
 
 
 def finish_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
     res = change_status(n_id, 'F')
-    addLog(n_id, 'F')
+    if res == 1:
+        addLog(n_id, 'F')
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -74,17 +86,21 @@ def del_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
     res = change_status(n_id, 'D')
-    addLog(n_id, 'D')
+    if res == 1:
+        addLog(n_id, 'D')
     return HttpResponse(json.dumps({'result': res}))
 
 
 def del_checked_notes(request):
+    global res
     data = json.loads(request.body)
     note_id_list = list(data.values())[0]
-    res = 1
     for i in note_id_list:
         res = change_status(i, 'D')
-        addLog(i, 'D')
+        if res == 1:
+            addLog(i, 'D')
+        else:
+            break
     return HttpResponse(json.dumps({'result': res}))
 
 
@@ -96,19 +112,25 @@ def recover_note(request):
     # 根据进行的时间判断记事的状态
     now_status = get_status(note.start_time, note.end_time)
     res = change_status(n_id, now_status)
-    addLog(n_id, 'R')
+    if res == 1:
+        addLog(n_id, 'R')
     return HttpResponse(json.dumps({'result': res}))
 
 
 # 恢复记事
-def recover_all_notes(request):
-    note_list = [i for i in Note.objects.filter(status='D')]
-    res = 1
+def recover_checked_notes(request):
+    global res
+    data = json.loads(request.body)
+    id_list = list(data.values())[0]
+    note_list = [i for i in Note.objects.filter(status='D') if i.id in id_list]
     for i in note_list:
         # 根据进行的时间判断记事的状态
         now_status = get_status(i.start_time, i.end_time)
         res = change_status(i.id, now_status)
-        addLog(i.id, 'R')
+        if res == 1:
+            addLog(i.id, 'R')
+        else:
+            break
     return HttpResponse(json.dumps({'result': res}))
 
 

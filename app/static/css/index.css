@@ -14,12 +14,12 @@
 }
 
 .underway {
-    color: red;
+    color: green;
     font-weight: bold;
 }
 
 .finish {
-    color: green;
+    color: red;
     font-weight: bold;
 }
 
@@ -65,4 +65,9 @@
     text-shadow: rgba(255, 255, 255, 0.5) 0 5px 6px, rgba(255, 255, 255, 0.2) 1px 3px 3px;
     -webkit-background-clip: text;
 
+}
+
+.checkbox {
+    width:17px;
+    height:17px;
 }

@@ -56,18 +56,19 @@ function delNote(id) {
 }
 
 function delCheckedNotes() {
-    var idList = []
-    $("input[type='checkbox']:checkbox:checked").each(function () {
+    var checkList = []
+    $("input[name='delCheckbox']:checkbox:checked").each(function () {
         //由于复选框一般选中的是多个,所以可以循环输出
-        var id = this.id
-        //根据控件id获取记事id
-        idList.push(id.split("-")[1])
+        var checkboxId = this.id
+        //根据控件id分离出记事的id
+        var id = checkboxId.split("-")[1]
+        checkList.push(Number(id))
     })
-    if (idList.length === 0) {
+    if (checkList.length === 0) {
         swal("请选择需要删除的记事", "请重试", "warning")
         return
     }
-    data = {'ids': idList}
+    data = {'ids': checkList}
     sendAjax(data, '/app/del/checked/', (value) => {
         if (value === 1) {
             swal({
@@ -114,6 +115,46 @@ function ruinNote(id) {
     )
 }
 
+function ruinCheckedNotes() {
+    var checkList = []
+    $("input[name='ruinCheckbox']:checkbox:checked").each(function () {
+        var id = this.id.split("-")[1]
+        checkList.push(Number(id))
+    })
+    const len = checkList.length
+    if (len === 0) {
+        swal("请选择需要删除的记事", "请重试", "warning")
+        return
+    }
+    swal({
+            title: "确定要删除选中的"+len+"件记事吗？", text: "删除不可恢复", type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        }, function (isConfirm) {
+            if (!isConfirm) {
+                swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
+                return
+            }
+            const data = {'ids': checkList}
+            sendAjax(data, '/app/ruin/checked', (value) => {
+                if (value === 1) {
+                    swal({
+                        title: "选中的记事已删除", text: "", type: "success", timer: 1000
+                    }, () => {
+                        location.reload()
+                    })
+                }
+                if (value === -1) {
+                    swal("删除失败", "请重试", "error")
+                }
+            })
+        }
+    )
+}
 
 function finishNote(id) {
     const data = {'id': id}
@@ -168,12 +209,22 @@ function recoverNote(id) {
     })
 }
 
-function recoverAllNotes() {
-    const data = {'id': 1}
-    sendAjax(data, '/app/recover/all', (value) => {
+function recoverCheckedNotes() {
+    var checkList = []
+    $("input[name='ruinCheckbox']:checkbox:checked").each(function () {
+        //根据控件id分离出记事的id
+        var id = this.id.split("-")[1]
+        checkList.push(Number(id))
+    })
+    if (checkList.length === 0) {
+        swal("请选择需要恢复的记事", "请重试", "warning")
+        return
+    }
+    data = {'ids': checkList}
+    sendAjax(data, '/app/recover/checked/', (value) => {
         if (value === 1) {
             swal({
-                title: "记事已全部恢复", text: "", type: "success", timer: 1000
+                title: "选中的记事已全部恢复", text: "", type: "success", timer: 1000
             }, () => {
                 location.reload()
             })

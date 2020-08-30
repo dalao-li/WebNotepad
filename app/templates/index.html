@@ -74,11 +74,9 @@
             {% for i in note %}
                 <tr>
                     <td>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" id="checkbox-{{ i.id }}"/>
-                            </label>
-                        </div>
+                        <label>
+                            <input type="checkbox" name="delCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
+                        </label>
                     </td>
                     <td>{{ i.id }}</td>
                     {% if i.grade == 'I' %}
@@ -92,10 +90,10 @@
                     <td>{{ i.text }}</td>
                     <td>{{ i.start_time }}</td>
                     <td>{{ i.end_time }}</td>
-                    {% if i.status == 'F' %}
-                        <td class="underway">已完成</td>
-                    {% elif i.status == 'U' %}
-                        <td class="finish">进行中</td>
+                    {% if i.status == 'U' %}
+                        <td class="underway">进行中</td>
+                    {% elif i.status == 'F' %}
+                        <td class="finish">已完成</td>
                     {% elif i.status == 'O' %}
                         <td class="overtime">已超时</td>
                     {% elif i.status == 'P' %}
@@ -121,7 +119,7 @@
             </tbody>
         </table>
         <button type="button" class="btn btn-primary" onclick="$('#addModal').modal('show')">添加</button>
-        <button type="button" class="btn btn-warning" onclick="" id="checkAllBtn">全选/取消</button>
+        <button type="button" class="btn btn-warning" onclick="" id="checkAllDelBtn">全选/取消</button>
         <button type="button" class="btn btn-danger" onclick=delCheckedNotes()>删除选中项</button>
     </div>
 
@@ -130,6 +128,7 @@
         <table id="recoverList" class="table table-hover">
             <thead>
             <tr>
+                <th>选择</th>
                 <th>序号</th>
                 <th>标题</th>
                 <th>正文</th>
@@ -145,6 +144,13 @@
             <tbody>
             {% for i in recover_notes %}
                 <tr>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="ruinCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
+                            </label>
+                        </div>
+                    </td>
                     <td>{{ i.id }}</td>
                     <td>{{ i.title }}</td>
                     <td>{{ i.text }}</td>
@@ -162,10 +168,10 @@
                 </tr>
             {% endfor %}
             </tbody>
-
         </table>
-        <button type="button" class="btn btn-warning" onclick=recoverAllNotes()>全部恢复</button>
-        <button type="button" class="btn btn-danger" onclick=>全部删除</button>
+        <button type="button" class="btn btn-warning" id="checkAllRuinBtn">全选/取消</button>
+        <button type="button" class="btn btn-success" onclick=recoverCheckedNotes()>恢复选中项</button>
+        <button type="button" class="btn btn-danger" onclick=ruinCheckedNotes()>删除选中项</button>
     </div>
 
     <!--第三个页面,注意id要和选项卡定义的href一致-->
@@ -365,7 +371,7 @@
         onDblClickRow: (row) => {
             if (row[6] !== '已完成') {
                 $('#editModal').modal('show')
-                $('#id').val(row[0])
+                $('#id').val(row[1])
                 $('#names').val(row[2])
                 $('#texts').val(row[3])
             }
@@ -374,6 +380,7 @@
         pagination: true,
         //首页页码
         pageNumber: 1,
+
         //一页显示的行数
         pageSize: 10,
         //是否开启分页条无限循环，最后一页时点击下一页是否转到第一页
@@ -401,7 +408,6 @@
         pageList: [50, 100],
         search: false,
     })
-
 
     $('#submitNoteBtn').click(function () {
         var data = {}
@@ -431,15 +437,26 @@
         editNote(data)
     })
 
-    $('#checkAllBtn').click(function () {
-        $("input[type='checkbox']").each(function () {
+    $('#checkAllDelBtn').click(function () {
+        $("input[name='delCheckbox']").each(function () {
             if ($(this).attr("checked")) {
                 $(this).removeAttr("checked");
             } else {
-                $(this).attr("checked", "true");
+                $(this).attr("checked", true);
             }
         })
     })
+
+    $('#checkAllRuinBtn').click(function () {
+        $("input[name='ruinCheckbox']").each(function () {
+            if ($(this).attr("checked")) {
+                $(this).removeAttr("checked");
+            } else {
+                $(this).attr("checked", true);
+            }
+        })
+    })
+
 
 </script>
 </body>

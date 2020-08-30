@@ -9,6 +9,8 @@ urlpatterns = [
 
     path('ruin/', views.ruin_note),
 
+    path('ruin/checked', views.ruin_checked_notes),
+
     path('del/', views.del_note),
 
     path('del/checked/', views.del_checked_notes),
@@ -19,6 +21,6 @@ urlpatterns = [
 
     path('recover/', views.recover_note),
 
-    path('recover/all', views.recover_all_notes)
+    path('recover/checked/', views.recover_checked_notes)
 
 ]
