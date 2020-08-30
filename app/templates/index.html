@@ -406,26 +406,6 @@
         search: false,
     })
 
-    //根据表格生成表格的字典形式
-    function getNoteDict(formName) {
-        var data = {}
-        const t = $('#' + formName).serializeArray()
-        $.each(t, function () {
-            data[this.name] = this.value
-        })
-        return data
-    }
-
-    //选择与取消选择checkbox
-    function checkAndCancel(checkboxName) {
-        $("input[name='" + checkboxName + "']").each(function () {
-            if ($(this).attr("checked")) {
-                $(this).removeAttr("checked");
-            } else {
-                $(this).attr("checked", true);
-            }
-        })
-    }
 
     $('#submitNoteBtn').click(function () {
         var data = getNoteDict('addNoteForm')

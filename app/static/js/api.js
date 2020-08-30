@@ -17,43 +17,24 @@ function sendAjax(param, url, callback) {
     })
 }
 
-function redactNote(operator, data) {
-    const titDict = {
-        "add": "添加成功",
-        "edit": "修改成功"
-    }
-    sendAjax(data, '/app/' + operator + '/', (value) => {
-        if (value === 1) {
-            swal({
-                title: titDict[operator], text: "", type: "success", timer: 1000
-            }, function () {
-                location.reload()
-            })
-            return
-        }
-        const error = {
-            "0": "填写内容不能为空",
-            "-1": "开始时间必须大于结束时间",
-            "-2": "结束时间必须大于当前时间",
-            "-3": "填写内容不能超过指定长度"
-        }
-        swal(error[value.toString()], "请重写填写", "error")
-    })
 
+//根据表格生成表格的字典形式
+function getNoteDict(formName) {
+    var data = {}
+    const t = $('#' + formName).serializeArray()
+    $.each(t, function () {
+        data[this.name] = this.value
+    })
+    return data
 }
 
-function delNote(id) {
-    const data = {'id': id}
-    sendAjax(data, '/app/del/', (value) => {
-        if (value === 1) {
-            swal({
-                title: "删除成功", text: "", type: "success", timer: 1000
-            }, () => {
-                location.reload()
-            })
-        }
-        if (value === -1) {
-            swal("删除失败", "请重试", "error")
+//选择与取消选择checkbox
+function checkAndCancel(checkboxName) {
+    $("input[name='" + checkboxName + "']").each(function () {
+        if ($(this).attr("checked")) {
+            $(this).removeAttr("checked");
+        } else {
+            $(this).attr("checked", true);
         }
     })
 }
@@ -72,6 +53,70 @@ function getCheckedList(checkboxName) {
     return checkList
 }
 
+function disCallPage(operator, value) {
+    const success = {
+        "add": "添加成功",
+        "edit": "修改成功",
+        "finish": "记事已完成",
+        "recover": "选择的记事已恢复",
+        "del": "选择的记事删除成功",
+    }
+    const failure = {
+        "add": "添加失败",
+        "edit": "修改失败",
+        "finish": "选择的记事未完成",
+        "recover": "选择的记事恢复失败",
+        "del": "选择的记事删除失败",
+    }
+    if (value === 1) {
+        swal({
+            title: success[operator], text: "", type: "success", timer: 1000
+        }, function () {
+            location.reload()
+        })
+    }
+    if (value === -1) {
+        swal({
+            title: failure[operator], text: "请重试", type: "error"
+        })
+    }
+}
+
+
+function redactNote(operator, data) {
+    const success = {
+        "add": "添加成功",
+        "edit": "修改成功"
+    }
+    sendAjax(data, '/app/' + operator + '/', (value) => {
+        if (value === 1) {
+            swal({
+                title: success[operator], text: "", type: "success", timer: 1000
+            }, function () {
+                location.reload()
+            })
+            return
+        }
+        const error = {
+            "0": "填写内容不能为空",
+            "-1": "开始时间必须大于结束时间",
+            "-2": "结束时间必须大于当前时间",
+            "-3": "填写内容不能超过指定长度"
+        }
+        swal(error[value.toString()], "请重写填写", "error")
+    })
+
+}
+
+
+function delNote(id) {
+    const data = {'id': id}
+    sendAjax(data, '/app/del/', (value) => {
+        disCallPage('del', value)
+    })
+}
+
+
 function delCheckedNotes() {
     var checkList = getCheckedList('delCheckbox')
     if (checkList.length === 0) {
@@ -80,16 +125,7 @@ function delCheckedNotes() {
     }
     data = {'ids': checkList}
     sendAjax(data, '/app/del/checked/', (value) => {
-        if (value === 1) {
-            swal({
-                title: "删除成功", text: "", type: "success", timer: 1000
-            }, () => {
-                location.reload()
-            })
-        }
-        if (value === -1) {
-            swal("删除失败", "请重试", "error")
-        }
+        disCallPage('del', value)
     })
 }
 
@@ -110,16 +146,7 @@ function ruinNote(id) {
             }
             const data = {'id': id,}
             sendAjax(data, '/app/ruin/', (value) => {
-                if (value === 1) {
-                    swal({
-                        title: "删除成功", text: "", type: "success", timer: 1000
-                    }, () => {
-                        location.reload()
-                    })
-                }
-                if (value === -1) {
-                    swal("删除失败", "请重试", "error")
-                }
+                disCallPage('del', value)
             })
         }
     )
@@ -132,7 +159,7 @@ function ruinCheckedNotes() {
         return
     }
     swal({
-            title: "确定要删除选中的" + len + "件记事吗？", text: "删除不可恢复", type: "warning",
+            title: "确定要删除选中的" + checkList.length + "件记事吗？", text: "删除不可恢复", type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "确认",
@@ -146,16 +173,7 @@ function ruinCheckedNotes() {
             }
             const data = {'ids': checkList}
             sendAjax(data, '/app/ruin/checked', (value) => {
-                if (value === 1) {
-                    swal({
-                        title: "选中的记事已删除", text: "", type: "success", timer: 1000
-                    }, () => {
-                        location.reload()
-                    })
-                }
-                if (value === -1) {
-                    swal("删除失败", "请重试", "error")
-                }
+                disCallPage('del', value)
             })
         }
     )
@@ -164,16 +182,7 @@ function ruinCheckedNotes() {
 function finishNote(id) {
     const data = {'id': id}
     sendAjax(data, '/app/finish/', (value) => {
-        if (value === 1) {
-            swal({
-                title: "记事已完成", text: "", type: "success", timer: 1000
-            }, () => {
-                location.reload()
-            })
-        }
-        if (value === -1) {
-            swal("网络异常", "请重试", "error")
-        }
+        disCallPage('finish', value)
     })
 }
 
@@ -181,16 +190,7 @@ function finishNote(id) {
 function recoverNote(id) {
     const data = {'id': id}
     sendAjax(data, '/app/recover/', (value) => {
-        if (value === 1) {
-            swal({
-                title: "记事已恢复", text: "", type: "success", timer: 1000
-            }, () => {
-                location.reload()
-            })
-        }
-        if (value === -1) {
-            swal("网络异常", "请重试", "error")
-        }
+        disCallPage('recover', value)
     })
 }
 
@@ -207,16 +207,7 @@ function recoverCheckedNotes() {
     }
     data = {'ids': checkList}
     sendAjax(data, '/app/recover/checked/', (value) => {
-        if (value === 1) {
-            swal({
-                title: "选中的记事已全部恢复", text: "", type: "success", timer: 1000
-            }, () => {
-                location.reload()
-            })
-        }
-        if (value === -1) {
-            swal("网络异常", "请重试", "error")
-        }
+        disCallPage('recover', value)
     })
 }
 
