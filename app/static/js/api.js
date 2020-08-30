@@ -17,14 +17,17 @@ function sendAjax(param, url, callback) {
     })
 }
 
-
-function addNote(data) {
-    sendAjax(data, '/app/add/', (value) => {
+function redactNote(operator, data) {
+    const titDict = {
+        "add": "添加成功",
+        "edit": "修改成功"
+    }
+    sendAjax(data, '/app/' + operator + '/', (value) => {
         if (value === 1) {
             swal({
-                title: "添加成功", text: "", type: "success", timer: 1000
-            }, () => {
-                location.href = '/app/'
+                title: titDict[operator], text: "", type: "success", timer: 1000
+            }, function () {
+                location.reload()
             })
             return
         }
@@ -36,8 +39,8 @@ function addNote(data) {
         }
         swal(error[value.toString()], "请重写填写", "error")
     })
-}
 
+}
 
 function delNote(id) {
     const data = {'id': id}
@@ -55,15 +58,22 @@ function delNote(id) {
     })
 }
 
-function delCheckedNotes() {
+//获取被选中记事的id
+function getCheckedList(checkboxName) {
     var checkList = []
-    $("input[name='delCheckbox']:checkbox:checked").each(function () {
+    $("input[name='" + checkboxName + "']:checkbox:checked").each(function () {
         //由于复选框一般选中的是多个,所以可以循环输出
         var checkboxId = this.id
         //根据控件id分离出记事的id
         var id = checkboxId.split("-")[1]
+        //将id转化为int形
         checkList.push(Number(id))
     })
+    return checkList
+}
+
+function delCheckedNotes() {
+    var checkList = getCheckedList('delCheckbox')
     if (checkList.length === 0) {
         swal("请选择需要删除的记事", "请重试", "warning")
         return
@@ -116,18 +126,13 @@ function ruinNote(id) {
 }
 
 function ruinCheckedNotes() {
-    var checkList = []
-    $("input[name='ruinCheckbox']:checkbox:checked").each(function () {
-        var id = this.id.split("-")[1]
-        checkList.push(Number(id))
-    })
-    const len = checkList.length
-    if (len === 0) {
+    var checkList = getCheckedList('ruinCheckbox')
+    if (checkList.length === 0) {
         swal("请选择需要删除的记事", "请重试", "warning")
         return
     }
     swal({
-            title: "确定要删除选中的"+len+"件记事吗？", text: "删除不可恢复", type: "warning",
+            title: "确定要删除选中的" + len + "件记事吗？", text: "删除不可恢复", type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "确认",
@@ -172,26 +177,6 @@ function finishNote(id) {
     })
 }
 
-
-function editNote(data) {
-    sendAjax(data, '/app/edit/', (value) => {
-        if (value === 1) {
-            swal({
-                title: "修改成功", text: "", type: "success", timer: 1000
-            }, function () {
-                location.reload()
-            })
-            return
-        }
-        const error = {
-            "0": "填写内容不能为空",
-            "-1": "开始时间必须大于结束时间",
-            "-2": "结束时间必须大于当前时间",
-            "-3": "填写内容不能超过指定长度"
-        }
-        swal(error[value.toString()], "请重写填写", "error")
-    })
-}
 
 function recoverNote(id) {
     const data = {'id': id}

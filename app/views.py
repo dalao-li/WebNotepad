@@ -47,6 +47,7 @@ def edit_note(request):
         Note.objects.filter(id=n_id).update(
             title=name, text=text, start_time=s_time, end_time=e_time, grade=grade, status=now_status)
         addLog(n_id, 'E')
+    print(res)
     return HttpResponse(json.dumps({'result': res}))
 
 

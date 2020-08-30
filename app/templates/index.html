@@ -119,7 +119,7 @@
             </tbody>
         </table>
         <button type="button" class="btn btn-primary" onclick="$('#addModal').modal('show')">添加</button>
-        <button type="button" class="btn btn-warning" onclick="" id="checkAllDelBtn">全选/取消</button>
+        <button type="button" class="btn btn-warning" onclick=checkAndCancel('delCheckbox')>全选/取消</button>
         <button type="button" class="btn btn-danger" onclick=delCheckedNotes()>删除选中项</button>
     </div>
 
@@ -145,11 +145,9 @@
             {% for i in recover_notes %}
                 <tr>
                     <td>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="ruinCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
-                            </label>
-                        </div>
+                        <label>
+                            <input type="checkbox" name="ruinCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
+                        </label>
                     </td>
                     <td>{{ i.id }}</td>
                     <td>{{ i.title }}</td>
@@ -169,7 +167,7 @@
             {% endfor %}
             </tbody>
         </table>
-        <button type="button" class="btn btn-warning" id="checkAllRuinBtn">全选/取消</button>
+        <button type="button" class="btn btn-warning" onclick=checkAndCancel('ruinCheckbox')>全选/取消</button>
         <button type="button" class="btn btn-success" onclick=recoverCheckedNotes()>恢复选中项</button>
         <button type="button" class="btn btn-danger" onclick=ruinCheckedNotes()>删除选中项</button>
     </div>
@@ -380,7 +378,6 @@
         pagination: true,
         //首页页码
         pageNumber: 1,
-
         //一页显示的行数
         pageSize: 10,
         //是否开启分页条无限循环，最后一页时点击下一页是否转到第一页
@@ -409,52 +406,35 @@
         search: false,
     })
 
-    $('#submitNoteBtn').click(function () {
+    //根据表格生成表格的字典形式
+    function getNoteDict(formName) {
         var data = {}
-        const t = $('#addNoteForm').serializeArray()
+        const t = $('#' + formName).serializeArray()
         $.each(t, function () {
             data[this.name] = this.value
         })
-        for (const k in data) {
-            if (data.hasOwnProperty(k) && data[k] === "") {
-                return
+        return data
+    }
+
+    //选择与取消选择checkbox
+    function checkAndCancel(checkboxName) {
+        $("input[name='" + checkboxName + "']").each(function () {
+            if ($(this).attr("checked")) {
+                $(this).removeAttr("checked");
+            } else {
+                $(this).attr("checked", true);
             }
-        }
-        addNote(data)
+        })
+    }
+
+    $('#submitNoteBtn').click(function () {
+        var data = getNoteDict('addNoteForm')
+        redactNote("add", data)
     })
 
     $('#editNoteBtn').click(function () {
-        var data = {}
-        const t = $('#editNoteForm').serializeArray()
-        $.each(t, function () {
-            data[this.name] = this.value
-        })
-        for (const k in data) {
-            if (data.hasOwnProperty(k) && data[k] === "") {
-                return
-            }
-        }
-        editNote(data)
-    })
-
-    $('#checkAllDelBtn').click(function () {
-        $("input[name='delCheckbox']").each(function () {
-            if ($(this).attr("checked")) {
-                $(this).removeAttr("checked");
-            } else {
-                $(this).attr("checked", true);
-            }
-        })
-    })
-
-    $('#checkAllRuinBtn').click(function () {
-        $("input[name='ruinCheckbox']").each(function () {
-            if ($(this).attr("checked")) {
-                $(this).removeAttr("checked");
-            } else {
-                $(this).attr("checked", true);
-            }
-        })
+        var data = getNoteDict('editNoteForm')
+        redactNote("edit", data)
     })
 
 
