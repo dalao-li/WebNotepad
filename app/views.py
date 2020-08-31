@@ -135,6 +135,10 @@ def recover_checked_notes(request):
     return HttpResponse(json.dumps({'result': res}))
 
 
+def ruin_log(request):
+    Log.objects.all().delete()
+    return HttpResponse(json.dumps({'result': 1}))
+
 # 改变记事状态
 def change_status(n_id, status):
     Note.objects.filter(id=n_id).update(status=status)

@@ -11,6 +11,8 @@ urlpatterns = [
 
     path('ruin/checked', views.ruin_checked_notes),
 
+    path('ruin/log',views.ruin_log),
+
     path('del/', views.del_note),
 
     path('del/checked/', views.del_checked_notes),

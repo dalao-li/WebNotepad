@@ -106,11 +106,11 @@
                                 <i class="fa fa-check-square-o" style="font-size:20px"></i>
                             </button>
                         {% elif i.status == 'U' or i.status == 'P' %}
-                            <button type="button" class="btn btn-success" onclick=finishNote("{{ i.id }}")>完成
+                            <button type="button" class="btn btn-success" onclick=changeNote('finish',"{{ i.id }}")>完成
                                 <i class="fa fa-check-square-o" style="font-size:20px"></i>
                             </button>
                         {% endif %}
-                        <button type="button" class="btn btn-danger" onclick=delNote("{{ i.id }}")>删除
+                        <button type="button" class="btn btn-danger" onclick=changeNote('del',"{{ i.id }}")>删除
                             <i class="fa fa-exclamation-circle" style="font-size:20px"></i>
                         </button>
                     </td>
@@ -120,7 +120,7 @@
         </table>
         <button type="button" class="btn btn-primary" onclick="$('#addModal').modal('show')">添加</button>
         <button type="button" class="btn btn-warning" onclick=checkAndCancel('delCheckbox')>全选/取消</button>
-        <button type="button" class="btn btn-danger" onclick=delCheckedNotes()>删除选中项</button>
+        <button type="button" class="btn btn-danger" onclick=redactCheckedNotes('del')>删除选中项</button>
     </div>
 
     <!--第二个页面,注意id要和选项卡定义的href一致-->
@@ -146,7 +146,7 @@
                 <tr>
                     <td>
                         <label>
-                            <input type="checkbox" name="ruinCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
+                            <input type="checkbox" name="recoverCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
                         </label>
                     </td>
                     <td>{{ i.id }}</td>
@@ -156,7 +156,7 @@
                     <td>{{ i.end_time }}</td>
                     <td class="danger">已删除</td>
                     <td>
-                        <button type="button" class="btn btn-success" onclick=recoverNote("{{ i.id }}")>恢复
+                        <button type="button" class="btn btn-success" onclick=changeNote('recover',"{{ i.id }}")>恢复
                             <i class="fa fa-check-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" onclick=ruinNote("{{ i.id }}")>彻底删除
@@ -167,9 +167,9 @@
             {% endfor %}
             </tbody>
         </table>
-        <button type="button" class="btn btn-warning" onclick=checkAndCancel('ruinCheckbox')>全选/取消</button>
-        <button type="button" class="btn btn-success" onclick=recoverCheckedNotes()>恢复选中项</button>
-        <button type="button" class="btn btn-danger" onclick=ruinCheckedNotes()>删除选中项</button>
+        <button type="button" class="btn btn-warning" onclick=checkAndCancel('recoverCheckbox')>全选/取消</button>
+        <button type="button" class="btn btn-success" onclick=redactCheckedNotes('recover')>恢复选中项</button>
+        <button type="button" class="btn btn-danger" onclick=redactCheckedNotes('ruin')>删除选中项</button>
     </div>
 
     <!--第三个页面,注意id要和选项卡定义的href一致-->
@@ -204,6 +204,7 @@
             {% endfor %}
             </tbody>
         </table>
+        <button type="button" class="btn btn-danger" onclick=ruinLog()>清空记录</button>
     </div>
 </div>
 
@@ -403,7 +404,7 @@
         pageSize: 50,
         paginationLoop: false,
         pageList: [50, 100],
-        search: false,
+        search: true,
     })
 
 
