@@ -43,7 +43,6 @@ function checkAndCancel(checkboxName) {
 function getCheckedList(checkboxName) {
     var checkList = []
     $("input[name='" + checkboxName + "']:checkbox:checked").each(function () {
-        //由于复选框一般选中的是多个,所以可以循环输出
         var checkboxId = this.id
         //根据控件id分离出记事的id
         var id = checkboxId.split("-")[1]
@@ -53,7 +52,7 @@ function getCheckedList(checkboxName) {
     return checkList
 }
 
-function disCallPage(operator, value) {
+function disCallPage(operate, value) {
     const success = {
         "add": "添加成功",
         "edit": "修改成功",
@@ -74,23 +73,23 @@ function disCallPage(operator, value) {
     }
     if (value === 1) {
         swal({
-            title: success[operator], text: "一秒后自动刷新", type: "success", timer: 1500
-        }, function () {
+            title: success[operate], text: "一秒后自动刷新", type: "success", timer: 1500
+        }, () => {
             location.reload()
         })
     }
     if (value === -1) {
         swal({
-            title: failure[operator], text: "请重试", type: "error"
+            title: failure[operate], text: "请重试", type: "error"
         })
     }
 }
 
-//operator： add , edit
-function redactNote(operator, data) {
-    sendAjax(data, '/app/' + operator + '/', (value) => {
+//operate： add , edit
+function redactNote(operate, data) {
+    sendAjax(data, '/app/' + operate + '/', (value) => {
         if (value === 1) {
-            disCallPage(operator, value)
+            disCallPage(operate, value)
         } else {
             const error = {
                 "0": "填写内容不能为空",
@@ -103,31 +102,35 @@ function redactNote(operator, data) {
     })
 }
 
-//operator: finish ,del , recover
-function changeNote(operator, id) {
+//operate: finish ,del , recover
+function changeNote(operate, id) {
     const data = {'id': id}
-    sendAjax(data, '/app/' + operator + '/', (value) => {
-        disCallPage(operator, value)
+    sendAjax(data, '/app/' + operate + '/', (value) => {
+        disCallPage(operate, value)
     })
 }
 
 
-function redactCheckedNotes(operator) {
+function redactCheckedNotes(operate) {
     const warn = {
         'del': "请选择需要删除的记事",
         'recover': "请选择需要恢复的记事",
         'ruin': "请选择需要彻底删除的记事"
     }
-    //获取选中记事的id
-    var checkList = getCheckedList(operator + 'Checkbox')
+    const boxName = {
+        'del': 'delCheckbox',
+        'recover': 'recoverCheckbox',
+        'ruin': 'recoverCheckbox'
+    }
+    var checkList = getCheckedList(boxName[operate])
     if (checkList.length === 0) {
-        swal(warn[operator], "请重试", "warning")
+        swal(warn[operate], "请重试", "warning")
         return
     }
     data = {'ids': checkList}
-    if (operator === 'ruin') {
+    if (operate === 'ruin') {
         swal({
-                title: "确定要删除选中的" + checkList.length + "件记事吗？", text: "删除不可恢复", type: "warning",
+                title: "确定要彻底删除选中的" + checkList.length + "件记事吗？", text: "删除不可恢复", type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "确认",
@@ -139,14 +142,14 @@ function redactCheckedNotes(operator) {
                     swal({title: "已取消", text: "您取消了删除操作！", type: "warning"})
                     return
                 }
-                sendAjax(data, '/app/' + operator + '/checked/', (value) => {
-                    disCallPage(operator, value)
+                sendAjax(data, '/app/' + operate + '/checked/', (value) => {
+                    disCallPage(operate, value)
                 })
             }
         )
     } else {
-        sendAjax(data, '/app/' + operator + '/checked/', (value) => {
-            disCallPage(operator, value)
+        sendAjax(data, '/app/' + operate + '/checked/', (value) => {
+            disCallPage(operate, value)
         })
     }
 }

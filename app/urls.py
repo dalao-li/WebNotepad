@@ -9,9 +9,9 @@ urlpatterns = [
 
     path('ruin/', views.ruin_note),
 
-    path('ruin/checked', views.ruin_checked_notes),
+    path('ruin/checked/', views.ruin_checked_notes),
 
-    path('ruin/log',views.ruin_log),
+    path('ruin/log/',views.ruin_log),
 
     path('del/', views.del_note),
 
