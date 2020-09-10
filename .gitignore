@@ -1,0 +1,8 @@
+# migrations
+/app/migrations
+
+#venv
+/venv
+
+#db
+db.sqlite3

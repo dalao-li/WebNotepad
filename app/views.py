@@ -1,9 +1,8 @@
-import datetime as datetime
 import json
 
 from django.shortcuts import render, HttpResponse
 from app.models import Note, Log
-
+from app.controller import *
 
 # Create your views here.
 
@@ -24,6 +23,7 @@ def index_page(request):
 
 def add_note(request):
     data = json.loads(request.body)
+    print(data)
     res = judge_input('add', data)
     # 输入合法
     if res == 1:
@@ -139,6 +139,7 @@ def ruin_log(request):
     Log.objects.all().delete()
     return HttpResponse(json.dumps({'result': 1}))
 
+
 # 改变记事状态
 def change_status(n_id, status):
     Note.objects.filter(id=n_id).update(status=status)
@@ -147,56 +148,7 @@ def change_status(n_id, status):
     return -1
 
 
-# 根据时间判断记事状态
-def get_status(s_time, e_time):
-    current_time = datetime.datetime.now()
-    # 如果开始与结束时间是str类型,则需进行类型转换
-    if type(s_time) == str:
-        s_time = change_time_format(s_time)
-        e_time = change_time_format(e_time)
-    # 进行中
-    if s_time < current_time < e_time:
-        return 'U'
-    # 超时
-    elif current_time > e_time:
-        return 'O'
-    # 未开始
-    elif current_time < s_time:
-        return 'P'
-
-
-# 判断前端输入格式
-def judge_input(origin, data):
-    global name, text, e_time, s_time
-    for i in data.keys():
-        if data[i] == '':
-            return 0
-    if origin == 'add':
-        name, text, s_time, e_time, grade = data.values()
-    elif origin == 'edit':
-        id, name, text, start_time, e_time, grade = data.values()
-    if len(name) > 10 or len(text) > 20:
-        return -3
-    # 时间不合法
-    if e_time < s_time:
-        return -1
-    # 转换结束时间的格式,方便进行比较
-    e_time = change_time_format(e_time)
-    # 结束时间小于当前时间
-    if e_time < datetime.datetime.now():
-        return -2
-    return 1
-
-
-# 将str类型的时间格式转换为datetime类型
-def change_time_format(time):
-    time = time.replace('T', ' ')
-    time += ':00'
-    return datetime.datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-
-
 # 增加操作日志
 def addLog(n_id, operate):
     current_time = datetime.datetime.now()
-    Log.objects.create(note_id=n_id, operation=operate,
-                       record_time=current_time)
+    Log.objects.create(note_id=n_id, operation=operate, record_time=current_time)

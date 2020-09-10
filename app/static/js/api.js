@@ -9,6 +9,7 @@ function sendAjax(param, url, callback) {
         //服务器返回的数据类型
         dataType: "json",
         success: function (data) {
+            console.log(data)
             callback(data.result)
         },
         error: function () {
@@ -87,7 +88,7 @@ function disCallPage(operate, value) {
 
 //operate： add , edit
 function redactNote(operate, data) {
-    sendAjax(data, '/app/' + operate + '/', (value) => {
+    sendAjax(data, '/app/' + operate + '/', function(value) {
         if (value === 1) {
             disCallPage(operate, value)
         } else {
