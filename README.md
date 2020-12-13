@@ -1,7 +1,6 @@
 # WebNotepad-Django
-基于Django开发的网页记事本
 
-
+基于 Django 开发的网页备忘本
 
 ![](http://cdn.hurra.ltd/img/20200809153325.png)
 

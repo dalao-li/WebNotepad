@@ -1,7 +1,7 @@
 import datetime
 
 
-# 根据时间判断记事状态
+# 根据时间判断备忘状态
 def get_status(s_time, e_time):
     current_time = datetime.datetime.now()
     # 如果开始与结束时间是str类型,则需进行类型转换

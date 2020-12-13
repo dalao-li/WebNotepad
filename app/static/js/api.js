@@ -9,7 +9,7 @@ function sendAjax(param, url, callback) {
         //服务器返回的数据类型
         dataType: "json",
         success: function (data) {
-            console.log(data)
+            //console.log(data)
             callback(data.result)
         },
         error: function () {
@@ -21,7 +21,7 @@ function sendAjax(param, url, callback) {
 
 //根据表格生成表格的字典形式
 function getNoteDict(formName) {
-    var data = {}
+    const data = {}
     const t = $('#' + formName).serializeArray()
     $.each(t, function () {
         data[this.name] = this.value
@@ -33,20 +33,20 @@ function getNoteDict(formName) {
 function checkAndCancel(checkboxName) {
     $("input[name='" + checkboxName + "']").each(function () {
         if ($(this).attr("checked")) {
-            $(this).removeAttr("checked");
+            $(this).removeAttr("checked")
         } else {
-            $(this).attr("checked", true);
+            $(this).attr("checked", true)
         }
     })
 }
 
-//获取被选中记事的id
+//获取被选中备忘的id
 function getCheckedList(checkboxName) {
-    var checkList = []
+    const checkList = [];
     $("input[name='" + checkboxName + "']:checkbox:checked").each(function () {
-        var checkboxId = this.id
-        //根据控件id分离出记事的id
-        var id = checkboxId.split("-")[1]
+        const checkboxId = this.id
+        //根据控件id分离出备忘的id
+        const id = checkboxId.split("-")[1]
         //将id转化为int形
         checkList.push(Number(id))
     })
@@ -57,19 +57,19 @@ function disCallPage(operate, value) {
     const success = {
         "add": "添加成功",
         "edit": "修改成功",
-        "finish": "记事已完成",
-        "recover": "选择的记事已恢复",
-        "del": "选择的记事删除成功",
-        "ruin": "选择的记事彻底删除成功",
+        "finish": "备忘已完成",
+        "recover": "选择的备忘已恢复",
+        "del": "选择的备忘删除成功",
+        "ruin": "选择的备忘彻底删除成功",
         "ruinLog": "记录已经清空"
     }
     const failure = {
         "add": "添加失败",
         "edit": "修改失败",
-        "finish": "选择的记事未完成",
-        "recover": "选择的记事恢复失败",
-        "del": "选择的记事删除失败",
-        "ruin": "选择的记事未彻底删除",
+        "finish": "选择的备忘未完成",
+        "recover": "选择的备忘恢复失败",
+        "del": "选择的备忘删除失败",
+        "ruin": "选择的备忘未彻底删除",
         "ruinLog": "记录未清空"
     }
     if (value === 1) {
@@ -86,9 +86,58 @@ function disCallPage(operate, value) {
     }
 }
 
+//输入数据合法性判断
+function judgeInput(d) {
+    if (d['title'] === "" || d['text'] === "") {
+        return "-1"
+    }
+    if (d['startTime'] === "" || d['endTime'] === "") {
+        return "-2"
+    }
+    const currentTime = new Date()
+    //结束时间应该大于开始时间
+    if (d['startTime'] >= d['endTime']) {
+        return "-3"
+    }
+    //结束时间应该大于当前时间
+    if (currentTime.toLocaleString() >= d['endTime']) {
+        return "-4"
+    }
+    return "1"
+}
+
+function addNote() {
+    const data = {}
+    const t = $('#addNoteForm').serializeArray()
+    $.each(t, function () {
+        data[this.name] = this.value
+    })
+    const v = judgeInput(data)
+    if (v !== "1") {
+        const error = {
+            "-1": "标题或内容不能为空",
+            "-2": "时间不能为空",
+            "-3": "开始时间必须大于结束时间",
+            "-4": "结束时间必须大于当前时间",
+            "-5": "填写内容不能超过指定长度"
+        }
+        swal(error[v], "请重写填写", "error")
+        return
+    }
+    sendAjax(data, '/app/add/', (value) => {
+        if (value === 1) {
+            swal({
+                title: "添加成功", text: "一秒后自动刷新", type: "success", timer: 1500
+            }, () => {
+                location.reload()
+            })
+        }
+    })
+}
+
 //operate： add , edit
 function redactNote(operate, data) {
-    sendAjax(data, '/app/' + operate + '/', function(value) {
+    sendAjax(data, '/app/' + operate + '/', (value) => {
         if (value === 1) {
             disCallPage(operate, value)
         } else {
@@ -114,9 +163,9 @@ function changeNote(operate, id) {
 
 function redactCheckedNotes(operate) {
     const warn = {
-        'del': "请选择需要删除的记事",
-        'recover': "请选择需要恢复的记事",
-        'ruin': "请选择需要彻底删除的记事"
+        'del': "请选择需要删除的备忘",
+        'recover': "请选择需要恢复的备忘",
+        'ruin': "请选择需要彻底删除的备忘"
     }
     const boxName = {
         'del': 'delCheckbox',
@@ -128,10 +177,10 @@ function redactCheckedNotes(operate) {
         swal(warn[operate], "请重试", "warning")
         return
     }
-    data = {'ids': checkList}
+    let data = {'ids': checkList}
     if (operate === 'ruin') {
         swal({
-                title: "确定要彻底删除选中的" + checkList.length + "件记事吗？", text: "删除不可恢复", type: "warning",
+                title: "确定要彻底删除选中的" + checkList.length + "件备忘吗？", text: "删除不可恢复", type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "确认",
@@ -159,7 +208,7 @@ function redactCheckedNotes(operate) {
 //彻底删除
 function ruinNote(id) {
     swal({
-            title: "确定要删除该记事吗？", text: "删除不可恢复", type: "warning",
+            title: "确定要删除该备忘吗？", text: "删除不可恢复", type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "确认",

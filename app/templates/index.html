@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>记事本</title>
+    <title>备忘录</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
@@ -27,12 +27,12 @@
 </head>
 <body>
 
-<h1 class="nameTitle">网页记事本</h1>
+<h1 class="nameTitle">网页备忘录</h1>
 <nav class="navbar nav-tabs" role="navigation">
     <ul class="nav nav-tabs">
         <li class="nav-item ">
             <a class="nav-link active" href="#mainTab" data-toggle="tab">
-                <span class="navTitle">记事本</span>
+                <span class="navTitle">备忘录</span>
                 <i class="fa fa-book"></i>
             </a>
         </li>
@@ -55,7 +55,6 @@
 
     <!--第一个页面,注意id要和选项卡定义的href一致-->
     <div id="mainTab" class="tab-pane in active">
-
         <table id="mainList" class="table table-hover">
             <thead>
             <tr>
@@ -71,14 +70,14 @@
             </tr>
             </thead>
             <tbody>
-            {% for i in note %}
+            {% for i in notes %}
                 <tr>
                     <td>
                         <label>
-                            <input type="checkbox" name="delCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
+                            <input type="checkbox" name="delCheckbox" class="checkbox" id="checkbox-{{ i.uuid }}"/>
                         </label>
                     </td>
-                    <td>{{ i.id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     {% if i.grade == 'I' %}
                         <td class="important">重要的</td>
                     {% elif i.grade == 'C' %}
@@ -100,7 +99,7 @@
                         <td class="plan">未开始</td>
                     {% endif %}
                     <td>
-                        <!--完成或超时的记事不可选中完成按钮-->
+                        <!--完成或超时的备忘不可选中完成按钮-->
                         {% if i.status == 'F' or i.status == 'O' %}
                             <button type="button" class="btn btn-success" disabled>完成
                                 <i class="fa fa-check-square-o" style="font-size:20px"></i>
@@ -146,17 +145,17 @@
                 <tr>
                     <td>
                         <label>
-                            <input type="checkbox" name="recoverCheckbox" class="checkbox" id="checkbox-{{ i.id }}"/>
+                            <input type="checkbox" name="recoverCheckbox" class="checkbox" id="checkbox-{{ i.uuid }}"/>
                         </label>
                     </td>
-                    <td>{{ i.id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ i.title }}</td>
                     <td>{{ i.text }}</td>
                     <td>{{ i.start_time }}</td>
                     <td>{{ i.end_time }}</td>
                     <td class="danger">已删除</td>
                     <td>
-                        <button type="button" class="btn btn-success" onclick=changeNote('recover',"{{ i.id }}")>恢复
+                        <button type="button" class="btn btn-success" onclick=changeNote('recover',"{{ i.uuid }}")>恢复
                             <i class="fa fa-check-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" onclick=ruinNote("{{ i.id }}")>彻底删除
@@ -186,7 +185,7 @@
             <tbody>
             {% for i in log %}
                 <tr>
-                    <td>{{ i.id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td>{{ i.note_id }}</td>
                     {% if i.operation == 'A' %}
                         <td class="add">新增</td>
@@ -216,7 +215,7 @@
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">
                     <i class="fa fa-user-plus" style="font-size:28px"></i>
-                    新增记事
+                    新增备忘
                 </h4>
             </div>
             <div class="modal-body">
@@ -227,7 +226,7 @@
                         </div>
                         <label for="name"></label>
                         <input type="text" class="form-control" id="name" name="name" maxlength="10"
-                               placeholder="标题最大长度为10个字符" required="required">
+                               placeholder="标题最大长度为10个字符">
                     </div>
 
                     <div class="input-group mb-3">
@@ -236,7 +235,7 @@
                         </div>
                         <label for="text"></label>
                         <input type="text" class="form-control" id="text" name="text" maxlength="20"
-                               placeholder="内容最大长度为20个字符" required="required">
+                               placeholder="内容最大长度为20个字符">
                     </div>
 
                     <div class="input-group mb-3">
@@ -245,7 +244,7 @@
                         </div>
                         <label for="startTime"></label>
                         <input type="datetime-local" class="form-control" id="startTime" name="startTime"
-                               placeholder="请选择开始时间" required="required">
+                               placeholder="请选择开始时间">
                     </div>
 
                     <div class="input-group mb-3">
@@ -254,7 +253,7 @@
                         </div>
                         <label for="endTime"></label>
                         <input type="datetime-local" class="form-control" id="endTime" name="endTime"
-                               placeholder="请选择结束时间" required="required">
+                               placeholder="请选择结束时间">
                     </div>
 
                     <div class="input-group mb-3">
@@ -270,7 +269,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="submitNoteBtn">提交
+                        <button type="submit" class="btn btn-primary" onclick=addNote()>提交
                             <i class="fa fa-pencil-square-o" style="font-size:20px"></i>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">关闭
@@ -291,14 +290,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="myModalLabel">
-                    <i class="fa fa-wrench"> 修改记事</i>
+                    <i class="fa fa-wrench"> 修改备忘</i>
                 </h4>
             </div>
             <div class="modal-body">
                 <form id="editNoteForm" action="" onsubmit="return false">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">记事序号</span>
+                            <span class="input-group-text">备忘序号</span>
                         </div>
                         <label for="id"></label>
                         <input type="text" class="form-control" id="id" name="id" required readonly>
@@ -389,7 +388,7 @@
         search: true,
     })
 
-    $('#recoverList').bootstrapTable({
+    $('#recoverList,#logList').bootstrapTable({
         pagination: true,
         pageNumber: 1,
         pageSize: 10,
@@ -398,23 +397,8 @@
         search: true,
     })
 
-    $('#logList').bootstrapTable({
-        pagination: true,
-        pageNumber: 1,
-        pageSize: 50,
-        paginationLoop: false,
-        pageList: [50, 100],
-        search: true,
-    })
-
-
-    $('#submitNoteBtn').click(function () {
-        var data = getNoteDict('addNoteForm')
-        redactNote("add", data)
-    })
-
-    $('#editNoteBtn').click(function () {
-        var data = getNoteDict('editNoteForm')
+    $('#editNoteBtn').click(()=> {
+        const data = getNoteDict('editNoteForm');
         redactNote("edit", data)
     })
 
