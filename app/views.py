@@ -4,6 +4,7 @@ from django.shortcuts import render, HttpResponse
 from app.models import Note, Log
 from app.controller import *
 
+
 # Create your views here.
 
 # 主页面
@@ -15,12 +16,13 @@ def index_page(request):
         if i.status != 'F':
             # 更新
             now_status = get_status(i.start_time, i.end_time)
-            #print(now_status)
+            # print(now_status)
             Note.objects.filter(uuid=i.uuid).update(status=now_status)
     recover_notes = [i for i in Note.objects.filter(status='D')]
     logs = [i for i in Log.objects.all()]
     print(notes)
     return render(request, 'index.html', {'notes': notes, 'recover_notes': recover_notes, 'log': logs})
+
 
 # 添加备忘录
 def add_note(request):
@@ -34,8 +36,9 @@ def add_note(request):
         now_status = get_status(s_time, e_time)
         note = Note.objects.create(
             title=title, text=text, start_time=s_time, end_time=e_time, grade=grade, status=now_status)
-        #addLog(note.id, 'A')
+        # addLog(note.id, 'A')
     return HttpResponse(json.dumps({'result': res}))
+
 
 # 编辑备忘录
 def edit_note(request):
@@ -48,7 +51,7 @@ def edit_note(request):
         now_status = get_status(s_time, e_time)
         Note.objects.filter(id=n_id).update(
             title=name, text=text, start_time=s_time, end_time=e_time, grade=grade, status=now_status)
-        #addLog(n_id, 'E')
+        # addLog(n_id, 'E')
     print(res)
     return HttpResponse(json.dumps({'result': res}))
 
@@ -79,9 +82,10 @@ def ruin_checked_notes(request):
 def finish_note(request):
     data = json.loads(request.body)
     n_id = list(data.values())[0]
+    print(n_id)
     res = change_status(n_id, 'F')
     if res == 1:
-        #addLog(n_id, 'F')
+        # addLog(n_id, 'F')
         pass
     return HttpResponse(json.dumps({'result': res}))
 
@@ -91,7 +95,7 @@ def del_note(request):
     n_id = list(data.values())[0]
     res = change_status(n_id, 'D')
     if res == 1:
-        #addLog(n_id, 'D')
+        # addLog(n_id, 'D')
         pass
     return HttpResponse(json.dumps({'result': res}))
 
@@ -103,7 +107,7 @@ def del_checked_notes(request):
     for i in note_id_list:
         res = change_status(i, 'D')
         if res == 1:
-            #addLog(i, 'D')
+            # addLog(i, 'D')
             pass
         else:
             break
@@ -119,7 +123,7 @@ def recover_note(request):
     now_status = get_status(note.start_time, note.end_time)
     res = change_status(n_id, now_status)
     if res == 1:
-        #addLog(n_id, 'R')
+        # addLog(n_id, 'R')
         pass
     return HttpResponse(json.dumps({'result': res}))
 

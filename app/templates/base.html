@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>备忘录</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap-table.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"/>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert-dev.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap-table-zh-CN.min.js' %}"></script>
+    <script src="{% static 'js/api.js' %}"></script>
+    <style>
+        .navTitle {
+            font-weight: bold;
+            font-size: large
+        }
+    </style>
+</head>
+<body>
+<h1 class="nameTitle">网页备忘录</h1>
+<nav class="navbar nav-tabs" role="navigation">
+    <ul class="nav nav-tabs">
+        <li class="nav-item ">
+            <a class="nav-link active" href="#mainTab" data-toggle="tab">
+                <span class="navTitle">备忘录</span>
+                <i class="fa fa-book"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#recoverTab" data-toggle="tab">
+                <span class="navTitle">回收站</span>
+                <i class="fa fa-trash"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#logTab" data-toggle="tab">
+                <span class="navTitle">操作记录</span>
+                <i class="fa fa-archive"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% block base %}
+
+
+{% endblock %}
+
+
+</body>
+</html>

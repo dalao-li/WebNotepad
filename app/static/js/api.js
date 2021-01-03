@@ -99,10 +99,7 @@ function judgeInput(d) {
     if (d['startTime'] >= d['endTime']) {
         return "-3"
     }
-    //结束时间应该大于当前时间
-    if (currentTime.toLocaleString() >= d['endTime']) {
-        return "-4"
-    }
+
     return "1"
 }
 

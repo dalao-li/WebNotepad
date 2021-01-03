@@ -21,6 +21,7 @@ def get_status(s_time, e_time):
 
 # 判断前端输入格式
 def judge_input(origin, data):
+    # print(origin,data)
     global name, text, e_time, s_time
     for i in data.keys():
         if data[i] == '':

@@ -4,5 +4,3 @@ __pycache__/
 
 migrations/
 
-#db
-db.sqlite3
