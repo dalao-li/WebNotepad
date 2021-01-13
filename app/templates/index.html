@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% block base %}
+
     <div class="tab-content">
+
         <!--第一个页面,注意id要和选项卡定义的href一致-->
         <div id="mainTab" class="tab-pane in active">
             <table id="mainList" class="table table-hover">
@@ -54,12 +56,12 @@
                                     <i class="fa fa-check-square-o" style="font-size:20px"></i>
                                 </button>
                             {% elif i.status == 'U' or i.status == 'P' %}
-                                <button type="button" class="btn btn-success" onclick=changeNote('finish',"{{ i.id }}")>
+                                <button type="button" class="btn btn-success" onclick=changeNote('finish',"{{ i.uuid }}")>
                                     完成
                                     <i class="fa fa-check-square-o" style="font-size:20px"></i>
                                 </button>
                             {% endif %}
-                            <button type="button" class="btn btn-danger" onclick=changeNote('del',"{{ i.id }}")>删除
+                            <button type="button" class="btn btn-danger" onclick=changeNote('del',"{{ i.uuid }}")>删除
                                 <i class="fa fa-exclamation-circle" style="font-size:20px"></i>
                             </button>
                         </td>

@@ -99,7 +99,6 @@ function judgeInput(d) {
     if (d['startTime'] >= d['endTime']) {
         return "-3"
     }
-
     return "1"
 }
 
@@ -131,6 +130,7 @@ function addNote() {
         }
     })
 }
+
 
 //operate： add , edit
 function redactNote(operate, data) {

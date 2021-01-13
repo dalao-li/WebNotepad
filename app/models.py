@@ -44,4 +44,4 @@ class Log(models.Model):
     uuid = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4, editable=False)
     note_id = models.CharField(verbose_name='备忘id', max_length=10000)
     operation = models.CharField(verbose_name='操作', choices=choices, max_length=1)
-    record_time = models.DateTimeField(verbose_name='记录时间')
+    record_time = models.DateTimeField(verbose_name='记录时间',auto_now_add=True)
